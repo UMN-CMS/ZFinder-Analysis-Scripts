@@ -1,0 +1,31 @@
+[ruckstuh@pcminn15]~% cd /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.20/x86_64-slc6-gcc47-opt/root
+[ruckstuh@pcminn15]/afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.20/x86_64-slc6-gcc47-opt/root% . bin/thisroot.sh 
+[ruckstuh@pcminn15]/afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.20/x86_64-slc6-gcc47-opt/root% cd ~/scratch0/RooUnfold-1.1.1
+[ruckstuh@pcminn15]~/scratch0/RooUnfold-1.1.1% export LD_LIBRARY_PATH=/afs/cern.ch/sw/lcg/contrib/gcc/4.7/x86_64-slc6-gcc47-opt/lib64:$LD_LIBRARY_PATH
+[ruckstuh@pcminn15]~/scratch0/RooUnfold-1.1.1% make
+[ruckstuh@pcminn15]~/scratch0/RooUnfold-1.1.1% cd ..
+[ruckstuh@pcminn15]~/scratch0% root 
+Couldn't find font "-adobe-helvetica-medium-r-*-*-10-*-*-*-*-*-iso8859-1",
+trying "fixed". Please fix your system so helvetica can be found, 
+this font typically is in the rpm (or pkg equivalent) package 
+XFree86-[75,100]dpi-fonts or fonts-xorg-[75,100]dpi.
+  *******************************************
+  *                                         *
+  *        W E L C O M E  to  R O O T       *
+  *                                         *
+  *   Version   5.34/20    12 August 2014   *
+  *                                         *
+  *  You are welcome to visit our Web site  *
+  *          http://root.cern.ch            *
+  *                                         *
+  *******************************************
+
+ROOT 5.34/20 (v5-34-20@v5-34-20, Aug 13 2014, 15:08:24 on linuxx8664gcc)
+
+CINT/ROOT C/C++ Interpreter version 5.18.00, July 2, 2010
+Type ? for help. Commands must be C++ statements.
+Enclose multiple statements between { }.
+Warning in <TEnvRec::ChangeValue>: duplicate entry <Library.TSVDUnfold=libRooUnfold.so libCore.so libHist.so libGraf.so libTree.so libMatrix.so libMathCore.so> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <Library.vector<Double_t>=libRooUnfold.so libCore.so libHist.so libGraf.so libTree.so libMatrix.so libMathCore.so> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <Library.vector<Int_t>=libRooUnfold.so libCore.so libHist.so libGraf.so libTree.so libMatrix.so libMathCore.so> for level 0; ignored
+root [0] .q

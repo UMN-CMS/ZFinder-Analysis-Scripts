@@ -1,0 +1,62 @@
+{
+//=========Macro generated from canvas: CPull/CPull
+//=========  (Wed Apr  1 12:29:02 2015) by ROOT version5.34/18
+   TCanvas *CPull = new TCanvas("CPull", "CPull",52,27,800,900);
+   CPull->Range(-6.25,-1.875,6.25,16.875);
+   CPull->SetFillColor(0);
+   CPull->SetBorderMode(0);
+   CPull->SetBorderSize(2);
+   CPull->SetFrameBorderMode(0);
+   CPull->SetFrameBorderMode(0);
+   
+   TH1D *Pull = new TH1D("Pull","Pull",20,-5,5);
+   Pull->SetBinContent(5,1);
+   Pull->SetBinContent(6,1);
+   Pull->SetBinContent(8,2);
+   Pull->SetBinContent(9,6);
+   Pull->SetBinContent(10,9);
+   Pull->SetBinContent(11,8);
+   Pull->SetBinContent(12,4);
+   Pull->SetBinContent(14,2);
+   Pull->SetBinContent(15,2);
+   Pull->SetBinError(5,1);
+   Pull->SetBinError(6,1);
+   Pull->SetBinError(8,1.414214);
+   Pull->SetBinError(9,2.44949);
+   Pull->SetBinError(10,3);
+   Pull->SetBinError(11,2.828427);
+   Pull->SetBinError(12,2);
+   Pull->SetBinError(14,1.414214);
+   Pull->SetBinError(15,1.414214);
+   Pull->SetMinimum(0);
+   Pull->SetMaximum(15);
+   Pull->SetEntries(35);
+   Pull->SetStats(0);
+   Pull->GetXaxis()->SetTitle("(Unfolded/Generated-1)/#sigma(Unfolded/Generated)");
+   Pull->GetXaxis()->SetLabelFont(42);
+   Pull->GetXaxis()->SetLabelOffset(0);
+   Pull->GetXaxis()->SetTitleFont(42);
+   Pull->GetYaxis()->SetTitle("#phi* bins");
+   Pull->GetYaxis()->SetLabelFont(42);
+   Pull->GetYaxis()->SetTitleFont(42);
+   Pull->GetZaxis()->SetLabelFont(42);
+   Pull->GetZaxis()->SetLabelSize(0.035);
+   Pull->GetZaxis()->SetTitleSize(0.035);
+   Pull->GetZaxis()->SetTitleFont(42);
+   Pull->Draw("");
+   TLatex *   tex = new TLatex(0.19,0.84,"MadGraph");
+tex->SetNDC();
+   tex->SetTextFont(42);
+   tex->SetTextSize(0.04);
+   tex->SetLineWidth(2);
+   tex->Draw();
+      tex = new TLatex(0.19,0.8,"unfolded using 5000 Powheg events");
+tex->SetNDC();
+   tex->SetTextFont(42);
+   tex->SetTextSize(0.04);
+   tex->SetLineWidth(2);
+   tex->Draw();
+   CPull->Modified();
+   CPull->cd();
+   CPull->SetSelected(CPull);
+}
