@@ -1,0 +1,630 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{sec:introduction}
+
+
+The Drell--Yan (DY) process, $q\bar q \rightarrow \cPZ\gamma^{*} \to \ell^+\ell^-$, where the $\ell$  is either an electron (e) or a muon ($\mu$), is one of the best-studied benchmark physics process at the LHC. The total  cross-sections have been calculated up to the next-to-next-to-leading-order (NNLO) in perturbation theory ~\cite{Anastasiou:2003ds,Melnikov:2006kv} and the differential spectra are available with NLO accuracy. At the LHC Run1, the measured cross-section, as a function of the dilepton invariant mass, varies over 9 orders of magnitude and it matches with the theoretical prediction within few percent. The experimentally clean final state of a pair of isolated and opposite sign leptons allows for a detailed study of a number of properties of the DY process. Importantly, since QCD effects are minimal for this process, DY events provide an excellent test ground for perturbative calculations for various observables. These include the  transverse momentum $q_T$ of the Z, and a related variable \phistar described below. A thorough understanding of the transverse momentum spectra of the vector bosons at hadron colliders is essential for future high precision measurement of W-mass. While the relatively low values of $q_T$ is caused by multiple soft gluon emissions, the  higher end of $q_T$ is caused by the production of additional hard partons in the final state of the short distance interaction. The latter part is reasonably well-described by fixed-order perturbation theory. However the fixed-order description  breaks down at  low $q_T$ limit leading to divergent behaviour  in the spectrum. The spectrum is actually tamed and the cross-over is described by the resummation technique driven by Sudakov factors for gluon emissions from the initial quarks. An accurate measurement of $q_T$ spectrum including a broad peak at a low value followed by a smoothly falling background thus facilitates the validation of the theoretical calculations. Importantly, for the Higgs boson production from gluon pair fusion, similar, but albeit different, Sudakov factors are at play leading to nonzero transverse momentum of the Higgs boson with a higher shift in the peak position. Thus experimental measurements of the observables involving the transverse momentum are extremely important at LHC. %The best theoretical treatment for gluon-resummation technique is available in RESBOS package ~\cite{Ladinsky:1993zn}.% while perturbative corrections presently accurate upto next-to-next-to-leading order (NNLO) are available in FEWZ package ~\cite{Gavin:2010az}.  
+
+Measurements of the $q_T$ distribution of $\cPZ/\gamma^{*}$ in the CMS experiment have been reported for collisions with a center-of-mass energy ($\sqrt{s}$) of 7 and 8 TeV using data corresponding to an integrated luminosity ${\cal L}$ of 35 \pbinv and 19.4 \pbinv respectively ~\cite{Aad:2011gj,Chatrchyan:2011wt,CMS-PAS-SMP-12-025}. The low statistics 8 TeV data used in ~\cite{CMS-PAS-SMP-12-025} correspond to very low pile up. Recently the double differential distribution in q$_{T}$ and the rapidity of \cPZ has been measured in CMS experiment using the complete data volume of ${\cal L}$ 19.7 fb$^{-1}$ collected at $\sqrt{s}$= 8 TeV ~\cite{CMS-PAS-SMP-13-013}. 
+
+Experimental measurement of $q_T$ using large-sample data is limited by the systematic uncertainties primarily related to the momentum measurements of the leptons. To circumvent this situation, a new variable \phistar ~\cite{Banfi:2012du} has been proposed which utilizes the angular correlation among the leptons as a function of the scale of the hard scatter and hence also probes $\q_T$. This has intrinsically better resolution and less sensitivity to experimental systematic uncertainties. It is defined as follows:
+$$\phi^*  = {\rm tan} (\phi _{\rm acop} /2) ~.~{\rm sin}(\theta ^* _\eta)$$
+where $\phi_{\rm acop} \equiv \pi -\Delta\phi$,  $\Delta\phi$ being the opening angle between the leptons in the plane transverse to the beam axis. $\theta^{*}_\eta$ indicates the scattering angle of the leptons in the rest frame of the dilepton system where the z-axis is parallel to the boost  and defined in terms of pseudorapidity of the two oppositely charged leptons as:
+${\rm cos}(\theta ^* _\eta)= {\rm tanh} [\frac{\eta _- ~-~\eta _+}{2}]$.
+For a dilepton mass in the vicinity of the Z, a range of $\phistar \le 1$ radian probes $q_T$ upto about 100 GeV. 
+
+ The \phistar distribution of the DY process has been measured in Tevatron by the D0 collaboration at $\sqrt{s}$ = 1.96 TeV ~\cite{Abazov:2010mk}  and at the LHC by the ATLAS collaboration at $\sqrt{s}$ = 7 TeV ~\cite{Aad:2012wfa}. We present the first measurement of \phistar in the CMS experiment using di-lepton events in data collected the LHC at $\sqrt{s}$ = 8 TeV, corresponding to ${\cal L} = 19.7  \pm 0.5$ fb$^{-1}$. 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{CMS Detector}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{sec:detector}
+
+ A key feature of the CMS detector is a superconducting solenoid magnet, 
+providing an axial magnetic
+field of 3.8~T which encompasses an all-silicon tracking detector (Tracker), a crystal electromagnetic calorimeter (ECAL) and a brass-scintillator hadronic sampling calorimeter (HCAL). The muon detection system (MUCH) lies outside the solenoid and sandwiched between steel layers
+which serve as both hadron absorbers and 
+as the return yoke for the magnetic field. A right-handed coordinate system is used 
+with the origin at the nominal collision point. The  $x$ axis
+points to the center of the LHC ring, the $y$ axis in the direction 
+perpendicular to the LHC plane, and the $z$ axis pointing along the
+anticlockwise-beam direction. The azimuthal angle $\phi$ is the angle relative to the positive $x$ axis measured in the $x$-$y$ plane. The pseudorapidity of a particle is defined as $\eta = -\ln [\tan (\theta/2)]$, where $\cos \theta = p_z/p$. 
+
+ The tracker, consisting of a 3-layer pixel subsystem and a 10-layer silicon strip subsystem, is used to measure charged particle trajectories in the range $0<\phi<2\pi$ and $|\eta|\le 2.4$.
+
+The electrons are detected using the energy deposition in the ECAL, consisting of about 76\,000 lead tungstate crystals,  positioned in the barrel ($|\eta| < 1.479$) and two endcap regions ($1.479 < |\eta| < 3$). The energy resolution of electrons of energy few tens of GeV is about 2\%{\bf actual angular resolution values to be put in}.
+
+The muons are detected in the range $|\eta|< 2.4$,  using three different types of detectors: drift tubes, cathode  strip chambers, and  resistive plate chambers. The transverse momentum  of muons can be measured, by combining  info from Tracker and muon system,  with resolution ranging from  1\% to 6\% depending on $\eta$.
+
+A 2-level trigger system is used to collect data on-line with a rejection factor of about $10^6$. In the first part custom hardware processors select events based on info from ECAL, HCAL and the muon system ~\cite{L1TDR}. The second part is software based and uses complete information of the event from all parts of the detector incluidng the Tracker~\cite{HLTTDR}.  
+
+A Particle-Flow event reconstruction algorithm ~\cite{CMS-PAS-PFT-10-002} is used for this analysis which uses information from each of the sub-detectors and classify particles as charged hadrons, neutral hadrons, photons, electrons or muons. 
+%The energy and position of photons is obtained from the ECAL. Electron are reconstructed from a combination of the tracker and the ECAL, while muons reconstructed by combining information from the tracker and the muon chambers. For charged hadrons information from the tracker, ECAL and HCAL are used and for neutral hadrons from the ECAL and HCAL.  Zero-suppression effects and non-linear calorimeter response is accounted for in calibrating the detectors.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Experimental data and simulation samples}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{sec:datamc_description}
+
+
+
+ A number of simulated samples have been  used for determination of acceptance, efficiencies, data-Monte-Carlo scale factors as well as for estimating some of the background rates. The signal sample, inclusive DY events with upto 4 hard jets at leading order, has been generated using {\sc Madgraph} generator ~\cite{MADGRAPH} using CTEQ6L1 PDF as well as at next-to-leading order with {\sc POWHEG} generator ~\cite{Nason:2004rx,Alioli:2008gx,Frixione:2007vw} using CT10 PDF.   The hadronization and parton shower effects were accounted for by interfacing  with {\sc PYTHIA} (v.~6.422) ~\cite{Sjostrand:2006za} using the Z2star tune.  The background samples ${\rm t\bar{t}}$, DY$\to\tau\tau$, W+jets were also generated using MADGRAPH. The di-boson samples WW, WZ  and ZZ productions and the single-top samples (${\rm tW}$ and ${\rm \bar{t}W}$), and the muon-enriched  QCD multijet samples were generated using {\sc PYTHIA}.  The generated events are passed through a detector simulation package based on GEANT4~\cite{Agostinelli:2002hh}.
+
+Minimum bias events have been superposed on the above physics processes to account for event pile ups due to  both in-time (within the same crossing) and out-of-time (immediate neighbouring crossings) possibilities. The average number of anticipated pile up (PU) events in the simulation has been modified based on the actual luminosity delivered by the machine at different periods of data taking.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Event Selection}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{sec:EvSelCriteria}
+
+The events are selected online using single lepton trigger conditions without any prescale during the 2012 $pp$ collision data taking period. For muons the kinematic requirements were  $\pt \ge 24$ GeV and $|\eta|\le 2.1$ while for electron they were 27 GeV and 2.4 respectively. 
+
+ Electron candidates are required to be well reconstructed in both the Tracker and ECAL and a number of quality criteria are applied.  ~\ref{electronpog}.
+% The electron's track is required to be well matched to the energy deposit in ECAL, and the track must have no more than one missing hit in the tracker layers, which helps to reject photon conversion events. Various cuts are applied to the shower shape in ECAL. 
+The relative isolation of the electron is calculated, with respect to its transverse momentum using particle flow information, in a cone of radius $\Delta R = \Delta\eta^{2}$ + $\phi^{2} < 0.3$ around its direction and is required to be less than 0.15. The isolation is corrected for contributions from event pile-up by taking into account the activities due to charged and neutral particles separately. The charged pileup contributions are identified by the fact that they do not come from the primary vertex and neutral contributions from the pileup are estimated using a naive average of neutral to charged contributions (0.5), which was measured in jets. 
+
+
+The standard CMS baseline muon selection criteria has been applied to select highest quality candidates ~\ref{muonpog}.
+% was applied{[}REF{]}. It requires among other things that the muon candidate is reconstructed in the muon chambers and the inner tracker devices with a $\chi^{2}$ /ndof$\textless$ 10 on the global track-fit. A minimum number of pixel and inner tracker layers with hits as well as more detailed matching criteria to the muon chambers are required. The distance between the muon candidate trajectory and the primary vertex is required to be smaller than 2 mm in the transverse plane and smaller than 5 mm in the longitudinal direction. Where the vertex with the highest sum of p$_{T}^{2}$ of associated tracks is selected as the primary vertex. 
+ The relative isolation of the muon, again based on  particle flow information, is required to be less than 0.12  within a cone of $\Delta R =$ 0.4 and corrected for pile up contribution as in the case of electrons.
+
+For offline selection inclusive dilepton events with the leptons originating from the same primary vertex were demanded. One of the leptons, consistent with the trigger, was required to satisfy $\pt > 30$ GeV and $\eta \le 2.1$ while the other lepton should have $\pt > 20$ GeV and $\eta \le 2.4$.
+The invariant mass $M_{\ell\ell}$ of the lepton pair is required  to be between 60 and 120~GeV. 
+Additionally, in the muon channel the leptons are required to have opposite electric charges.
+
+
+The efficiencies for   trigger, reconstruction, identification and isolation of the leptons are factorized and determined  in bins of transverse momnetum and pseudorapidity using tag-and-probe method. Scale factors are applied to the simulated samples to account for differences in these efficiencies between data and simulation. Energy/momentum scale corrections are applied to the leptons in both data and simulations.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Comparison of data vs Monte Carlo}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{sec:spectra}
+After all the selection, the collision data sample in electron channel has about 4.5M events and about 6.7M events in the muon channel. The spectra for  the transverse momentum of the electron and muon channels are presented in Fig.~\ref{fig:zPt}. \\
+{\bf the z-mass distribution will be kept in teh Appendix.}
+%\begin{figure}[hbtp]
+%  \begin{center}
+%    \includegraphics[width=0.46\textwidth]{zmass_electron.pdf} 
+%    \includegraphics[width=0.46\textwidth]{zmass_muon.pdf}
+%    \includegraphics[width=0.46\textwidth]{zmass_muon.pdf}
+%    \caption{The dilepton invariant mass spectrum in electron and muon channels.}
+%    \label{fig:zMass}
+%  \end{center}
+%\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure}[hbtp]
+  \begin{center}
+    \includegraphics[width=0.46\textwidth]{ZPT_electron.pdf}
+    \includegraphics[width=0.46\textwidth]{ZPT_muon.pdf}
+    \caption{The spectrum of dilepton transverse momentum in electron and muon channels.{\bf plots to be made in uniform style}}
+    \label{fig:zPt}
+  \end{center}
+\end{figure}
+
+
+The experimentally measured $\phi^*$ distribution is a 35-bin spectrum with varying bin-widths and presented in Fig.~\ref{fig:Nphistar}. The bulk of the events lie in the range \phistar$< 1$ radian. 
+The bin edges in \phistar are decided by the need for direct comparison with ATLAS analysis ~\cite{Aad:2012wfa}.  It is to be noted that  the ATLAS collaboration  used data at $\sqrt s = 7$ TeV while this analysis of the CMS colalboration uses data at $\sqrt s = 8$ TeV. \\
+{\bf $\phi^*$: ~ 0.001, ~0.004, ~0.008, ~0.012, ~0.016, ~0.020, ~0.024, ~0.029, 
+~0.034, ~0.039, ~0.045, ~0.051, }\\
+\indent \indent {\bf ~0.057, ~0.064, ~0.072, ~0.081, ~0.091, ~0.102, ~0.114, ~0.
+128, ~0.145, ~0.165, ~0.189, ~0.219, }\\
+\indent \indent  {\bf ~0.258, ~ 0.312, ~0.391, ~0.524, ~0.695, ~0.918, ~1.153, ~
+1.496, ~1.947, ~2.522, ~3.277.}\\
+
+
+\begin{figure}[hbtp]
+\begin{center}
+\includegraphics[height=80mm,width=75mm]{phistar_electron.pdf}
+\includegraphics[height=80mm,width=75mm]{phistar_muon.pdf}
+\caption{Data-Monte Carlo comparison of  \phistar distribution in dielectron and dimuon final states.{\bf plots to be made in uniform style}}
+    \label{fig:Nphistar}
+\end{center}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Background Estimation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{sec:bkgnd}
+At LHC pp collisions, a number of other physics 
+processes mimic the same dilepton final state, {\it viz.}, mainly through 
+inclusive production of
+\ttbar, ~$ \cPZ\to \tau\tau$, ~${\rm  WW}$, ~${\rm  WZ}$, 
+~${\rm   ZZ}$,  ~single-tops (${\rm tW}$  and ${\rm W\bar t}$)  etc.,
+ and, to a much lesser extent, through  ${\rm W +jets}$ and QCD multijets. 
+In the latter two cases we consider the possibility of a jet faking as a muon.
+
+In order to estimate the dominant backgrounds, within our signal region, we
+follow a data driven approach, based on the principle of lepton universality,
+which are  flavour symmetric, {\it viz.,} \ttbar, inclusive $\cPZ\to \tau\tau$, and (${\rm  WW}$ productions. The statistics for QCD multijet samples is not
+sufficient and we assume that the probability of 2 fake leptons satisfying all the selection criteria is negligible. Hence we do not consider it any more. 
+For the rest we consider the estimates
+from MC samples with a conservative uncertainty of 20\%  on the yields. 
+
+ Thus the probability of a dimuon final
+state from the falvour symmetric processes is half of the probability
+of a final state containing an electron and a muon, ideally in collision 
+data as well as in simulated samples. This so
+called $e\mu$ method thus estimates the number of events having a
+$\mu$$^{\pm}$$\mu^{\mp}$ lepton pair by measuring the rate of $e^{\pm}$$\mu^{\mp}$
+with better statistical accuracy.
+
+In the
+cases of WZ, ZZ productions, the two leptons in the final state may
+come from either same or different parent(s). Further the finite probability
+of jets faking as leptons, where one of the vector boson decays leptonically
+and the other hadronically has to be taken into account. 
+The $e\mu$ method cannot be applied for backgrounds due to W+jets
+and QCD multijets production which mimic dilepton signal. In order
+to estimate the background yield due to \ttbar and ${\rm  WW}$ processes
+we produce a control sample of inclusive, oppositely charged, 
+electron+muon final state from the 
+collison data. The signal process is not expected to
+contribute in this selection. This $e\mu$ pair is required to satisfy
+the constraint of invariant mass as well. The ratio of $e\mu$ to
+$\mu$$\mu$ events is obtained in simulation using high statistics
+samples. So the background event yield, (Data yield)$_{\mu\mu}$,
+is estimated by the following relation: 
+$${\rm (Data\, yield)}_{\mu\mu} = \frac{{\rm (Data\, yield)}_{e\mu}}{{\rm (MC\, 
+yield)}_{e\mu}} \cdot {\rm (MC\, yield)}_{\mu\mu}.$$
+
+Here  ${\rm (Data\, yield)}_{e\mu}$ is the event yield obtained in data by
+demanding an oppositely charged $e\mu$ pair. (MC yield)$_{e\mu}$
+is the sum of the event yields obtained in the MC for the processes
+mentioned above in each case demanding an oppositely charged $e\mu$
+pair. The required ${e\mu}$ scale factor as used to obtain the data-driven background yields as shown in Fig.~\ref{fig:mu-datadriven}, left. 
+(MC yield)$_{\mu\mu}$ is the sum of event yields obtained in
+the MC for the processes mentioned above where we demand, in each
+case, the presence of an oppositely charged muon pair.
+
+The event selection
+applied on the muon leg of the $e\mu$ control sample is exactly the
+same as we use for the signal $\mu$. These events are triggered using
+the same single-$\mu$ trigger as we use for the control sample. Additionally
+the relevant muon and electron identification and isolation efficiencies
+are applied. The kinematic selection criteria
+are exactly the same as with the signal sample, with one muon replaced
+by the electron, thus leading to the same fiducial selection as with
+the signal sample. The electron-muon pairs are required to have an
+invariant mass in the range of 60-120 GeV. This background estimate
+is subtracted from the signal before unfolding. 
+The final result of the estimated
+background is shown in Fig.~\ref{fig:mu-datadriven}, right. 
+
+For electron channel the same scale factors have been used.
+ {\bf need plot from e channel}
+
+\begin{figure}[hbtp]
+\begin{center}$ 
+\includegraphics[height=80mm,width=80mm]{dataMCemu.pdf}
+\includegraphics[height=80mm,width=80mm]{dataDriven.pdf}
+\caption{Left: $\phi^{*}$ distribution for the e$\mu$ final state as obtained from data and compared with the
+estimate from MC. Right: $\phi^{*}$ distribution from the backgrounds for
+${\mu\mu}$ final state obtained with the data-driven method.}
+    \label{fig:mu-datadriven}
+\end{center}$
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Unfolding of the measured spectra}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{sec:unfolding}
+Due to the finite resolution of the detector, the experimentally measured value of an observable is different from the true value. Hence it is necessary to unfold the experimental distribution to compare with the predictions from theory. To account for final state radiation of the leptons while comparing data with the theoretical predictions where the brehmsstrahlung has not been incorporated, the Monte Carlo information is extracted to the {\it Dressed} phase where the generated lepton is combined with all the photons radiated within an angle $\Delta R < 0.1$ within its direction.
+
+The unfolding is performed to the fiducial region $60 \GeV < M_{\ell\ell} < 120 \GeV$. One lepton is required to have $\pt
+> 30 \GeV$ and $|\eta| < 2.1$, while the other is required to have $\pt > 20$
+and $|\eta| < 2.4$. The unfolding is done using the
+\textquotedblleft{}iterative Bayesian\textquotedblright{} method 
+implemented in the RooUnfold package ~\cite{Prosper:2011zz}. This unfolding corrects for bin migration effects due to finite experimental resolutions. The bin migration, defined as the fraction of events reconstructed in a different bin than generated, is about 5\% in the electron channel and about 1\% in the muon channel. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Systematics Uncertainities}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{sec:systematics}
+The systematic uncertainties which affect the analysis
+are classified as follows. 
+
+\begin{itemize}
+\item
+ The uncertainties in the efficiencies due to trigger, isolation and 
+identification were evaluated by varying them randomly within their errors
+using  500 toy samples. The RMS of the these toys is quoted as the 
+corresponding systematic uncertaity.
+
+\item The uncertainty in the electron energy scale affects the \pt 
+requirements for the selection of two electrons. The thresholds were 
+varied up and down by 0.3\% and the difference in the \phistar 
+distribution after unfolding was taken as the systematic.
+
+\item Muon momentum scale is modified by the Rochester corrections~\cite{Rochester}. The the central value of the correction within 1 $\sigma$ is varied using 500 toys and the RMS is quoted as the error. 
+
+
+\item To estimate  uncertainty in the event pile-up rate, the cross section
+ of the minimum bias events is varied by $\pm$ 5\% . The maximum variation 
+with respect to the
+nominal pileup scenario is taken as the systematic error. 
+
+\item To account for the uncertainty in the final state radiation, the 
+simulation is re-weighted to reflect the
+difference between a soft-collinear approach and the exact O($\alpha$)
+result as suggested in~\cite{FSR}. The difference between the measurements
+with and without the re-weighting is assigned as an uncertainty. 
+
+\item In the data-driven estimation of the dominant backgrounds, ie, for 
+the processes $t\overline{t}$, ${\rm tW}$ and $\cPZ\to\tau\tau$ backgrounds,
+the $e\mu$ scale factors,  were varied randomly
+within the errors. The RMS of 500 toys is taken to be the systematic
+uncertianty due to these sources.
+For WZ and ZZ backgrounds the considered central values of the cross sections are varied together by 20\% to estimate the systematic uncertainties in their rates. In the electron channel the QCD and W+jet contribution is assigned a 100\% uncertainty.  
+
+\item The uncertainty due to the limited number of events in the simulated 
+samples affects the results of the unfolding. It is taken into account 
+via a toy MC calculation which varies
+the response matrix within the statistical uncertainties.  
+
+\item The uncertainty on the measurement of the integrated luminosity, 2.6\% ~\cite{CMS-PAS-LUM-13-001}, is uniform acorss the \phistar bins. It affects the determination of aboslute distribution, but not the normalized spectrum. 
+
+\end{itemize}
+
+{\bf Tables for systematic uncertainties to be made in uniform style}\\
+The  bin-wise values  of the components and the  total systematic uncertainty for the absolute cross section measurement are presented in Tables~\ref{tab:elsyst}  and ~\ref{tab:musyst} for electron and muon channels respectively along with the individual  components. The statistical uncertainties for each bin are also added for comparison. It is to be noted that since we use LO generator {\sc MADGRAPH} as our basis, we don't assign any uncertainty in our results due to PDF.
+
+\begin{table}
+\caption{Systematic errors (in percentage) in the electron channel for absolute cross section in different $\phi^*$ bins due to various sources. The total value includes the uncertainty of 2.6\% due to luminosity. } 
+\label{tab:elsyst}
+\begin{center}
+\begin{tabular}{ | c | r | r | r | r | r | r | r | r |}
+\hline
+$\phi^*$ range & Total & Stat. & Lumi.& MC stat. & Bkg. & Eff. & Pile-up & FSR \\ \hline
+0.000-0.004 & 2.67 & 0.27 & 2.6 &0.30 & 0.02 & 0.01 & 0.48 & 0.04  \\ \hline
+0.004-0.008 & 2.66 & 0.28 & 2.6 &0.30 & 0.05 & 0.01 & 0.40 & 0.04  \\ \hline
+0.008-0.012 & 2.66 & 0.29 & 2.6 &0.30 & 0.03 & 0.01 & 0.39 & 0.04  \\ \hline
+0.012-0.016 & 2.67 & 0.29 & 2.6 &0.30 & 0.03 & 0.01 & 0.44 & 0.05  \\ \hline
+0.016-0.020 & 2.70 & 0.29 & 2.6 &0.31 & 0.02 & 0.01 & 0.59 & 0.04  \\ \hline
+0.020-0.024 & 2.66 & 0.30 & 2.6 &0.31 & 0.04 & 0.01 & 0.34 & 0.04  \\ \hline
+0.024-0.029 & 2.67 & 0.27 & 2.6 &0.29 & 0.03 & 0.01 & 0.47 & 0.04  \\ \hline
+0.029-0.034 & 2.68 & 0.28 & 2.6 &0.29 & 0.02 & 0.01 & 0.48 & 0.04  \\ \hline
+0.034-0.039 & 2.68 & 0.29 & 2.6 &0.30 & 0.03 & 0.01 & 0.48 & 0.04  \\ \hline
+0.039-0.045 & 2.67 & 0.27 & 2.6 &0.29 & 0.02 & 0.01 & 0.44 & 0.05  \\ \hline
+0.045-0.052 & 2.66 & 0.25 & 2.6 &0.28 & 0.02 & 0.01 & 0.43 & 0.04  \\ \hline
+0.052-0.057 & 2.68 & 0.32 & 2.6 &0.34 & 0.01 & 0.01 & 0.43 & 0.04  \\ \hline
+0.057-0.064 & 2.67 & 0.28 & 2.6 &0.30 & 0.02 & 0.01 & 0.42 & 0.05  \\ \hline
+0.064-0.072 & 2.69 & 0.27 & 2.6 &0.29 & 0.02 & 0.01 & 0.55 & 0.04  \\ \hline
+0.072-0.081 & 2.67 & 0.26 & 2.6 &0.29 & 0.03 & 0.01 & 0.45 & 0.05  \\ \hline
+0.081-0.091 & 2.67 & 0.27 & 2.6 &0.30 & 0.02 & 0.01 & 0.47 & 0.05  \\ \hline
+0.091-0.102 & 2.68 & 0.27 & 2.6 &0.30 & 0.02 & 0.01 & 0.50 & 0.05  \\ \hline
+0.102-0.114 & 2.68 & 0.27 & 2.6 &0.31 & 0.03 & 0.01 & 0.49 & 0.05  \\ \hline
+0.114-0.128 & 2.67 & 0.27 & 2.6 &0.31 & 0.05 & 0.01 & 0.47 & 0.04  \\ \hline
+0.128-0.145 & 2.66 & 0.26 & 2.6 &0.30 & 0.06 & 0.01 & 0.35 & 0.05  \\ \hline
+0.145-0.165 & 2.67 & 0.26 & 2.6 &0.31 & 0.04 & 0.01 & 0.42 & 0.05  \\ \hline
+0.165-0.189 & 2.66 & 0.26 & 2.6 &0.31 & 0.05 & 0.01 & 0.39 & 0.05  \\ \hline
+0.189-0.219 & 2.66 & 0.26 & 2.6 &0.31 & 0.10 & 0.01 & 0.40 & 0.05  \\ \hline
+0.219-0.258 & 2.68 & 0.26 & 2.6 &0.31 & 0.09 & 0.01 & 0.48 & 0.05  \\ \hline
+0.258-0.312 & 2.67 & 0.26 & 2.6 &0.31 & 0.10 & 0.01 & 0.43 & 0.05  \\ \hline
+0.312-0.391 & 2.67 & 0.26 & 2.6 &0.31 & 0.11 & 0.01 & 0.41 & 0.05  \\ \hline
+0.391-0.524 & 2.67 & 0.26 & 2.6 &0.31 & 0.16 & 0.01 & 0.42 & 0.06  \\ \hline
+0.524-0.695 & 2.70 & 0.32 & 2.6 &0.38 & 0.23 & 0.02 & 0.50 & 0.06  \\ \hline
+0.695-0.918 & 2.70 & 0.39 & 2.6 &0.47 & 0.31 & 0.02 & 0.22 & 0.06  \\ \hline
+0.918-1.153 & 2.77 & 0.54 & 2.6 &0.62 & 0.37 & 0.02 & 0.33 & 0.06  \\ \hline
+1.153-1.496 & 2.81 & 0.61 & 2.6 &0.71 & 0.43 & 0.02 & 0.30 & 0.06  \\ \hline
+1.496-1.947 & 2.91 & 0.77 & 2.6 &0.85 & 0.47 & 0.02 & 0.39 & 0.07  \\ \hline
+1.947-2.522 & 3.05 & 0.99 & 2.6 &1.10 & 0.56 & 0.02 & 0.23 & 0.07  \\ \hline
+2.522-3.277 & 3.23 & 1.21 & 2.6 &1.36 & 0.59 & 0.02 & 0.16 & 0.08  \\ \hline
+3.277-10.000 & 2.99 & 0.90 & 2.6 &1.00 & 0.47 & 0.01 & 0.39 & 0.07  \\ 
+\hline
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}
+\caption{Systematic errors (in percentage) in the muon channel for absolute cross section in different $\phi^*$ bins  due to various sources. The total value includes the uncertainty of 2.6\% due to luminosity. } 
+\label{tab:musyst}
+\begin{center}
+\begin{tabular}{ | c | c | c | c | c | c | c | c | c| }
+\hline
+$\phi^*$ & ID \& & Trigger & Momentum & Bkground & Unfold & FSR & PU & Total \\
+range &ISO & & scale& estimates & & & +5\%, ~-5\% &incl. Lumi \\
+\hline
+0.00-0.004  & 0.042 & 0.025 & 0.023 & 0.0162  & 0.275  &  0.205 & 0.37  & 2.6491\\
+\hline
+0.004-0.008 & 0.042 & 0.025 & 0.025 & 0.0146  & 0.210  &  0.205 & 0.41  & 2.6490 \\
+\hline
+0.008-0.012 & 0.042 & 0.025 & 0.024 & 0.0174  & 0.209  &  0.207 & 0.41  & 2.6491 \\
+\hline
+0.012-0.016 & 0.042 & 0.025 & 0.024 & 0.0162  & 0.214  &  0.209 & 0.39  & 2.6466 \\
+\hline
+0.016-0.020 & 0.042 & 0.025 & 0.023 & 0.0141  & 0.216  &  0.208 & 0.40  & 2.6482 \\
+\hline
+0.020-0.024 & 0.042 & 0.025 & 0.023 & 0.0138  & 0.245  &  0.209 & 0.39  & 2.6493 \\
+\hline
+0.024-0.029 & 0.042 & 0.025 & 0.023 & 0.0141  & 0.199  &  0.209 & 0.44  & 2.6532 \\
+\hline
+0.029-0.034 & 0.042 & 0.025 & 0.024 & 0.0179  & 0.205  &  0.215 & 0.40  & 2.6479 \\
+\hline
+0.034-0.039 & 0.042 & 0.025 & 0.025 & 0.0146  & 0.231  &  0.216 & 0.43  & 2.6548 \\
+\hline
+0.039-0.045 & 0.042 & 0.026 & 0.021 & 0.0220  & 0.198  &  0.216 & 0.42  & 2.6505 \\
+\hline
+0.045-0.051 & 0.039 & 0.026 & 0.021 & 0.0231  & 0.206  &  0.221 & 0.42  & 2.6515 \\
+\hline
+0.051-0.057 & 0.042 & 0.026 & 0.022 & 0.0204  & 0.231  &  0.224 & 0.41  & 2.6523 \\
+\hline
+0.057-0.064 & 0.042 & 0.026 & 0.021 & 0.0229  & 0.219  &  0.225 & 0.38  & 2.6469 \\
+\hline
+0.064-0.072 & 0.042 & 0.026 & 0.019 & 0.0186  & 0.213  &  0.229 & 0.42  & 2.6528 \\
+\hline
+0.072-0.081 & 0.042 & 0.026 & 0.020 & 0.0264  & 0.208  &  0.233 & 0.37  & 2.6453 \\
+\hline
+0.081-0.091 & 0.042 & 0.027 & 0.018 & 0.0264  & 0.209  &  0.238 & 0.36  & 2.6445 \\
+\hline
+0.091-0.102 & 0.042 & 0.027 & 0.016 & 0.0220  & 0.209  &  0.242 & 0.39  & 2.6490 \\
+\hline
+0.102-0.114 & 0.042 & 0.028 & 0.019 & 0.0323  & 0.221  &  0.239 & 0.37  & 2.6470 \\
+\hline
+0.114-0.128 & 0.042 & 0.028 & 0.016 & 0.0365  & 0.222  &  0.249 & 0.41  & 2.6539 \\
+\hline
+0.128-0.145 & 0.042 & 0.028 & 0.015 & 0.0322  & 0.210  &  0.250 & 0.38  & 2.6485 \\
+\hline
+0.145-0.165 & 0.042 & 0.029 & 0.017 & 0.0410  & 0.213  &  0.251 & 0.39  & 2.6504 \\
+\hline
+0.165-0.189 & 0.042 & 0.030 & 0.016 & 0.0400  & 0.215  &  0.250 & 0.36  & 2.6462 \\
+\hline
+0.189-0.219 & 0.043 & 0.032 & 0.016 & 0.0436  & 0.217  &  0.252 & 0.35  & 2.6453 \\
+\hline
+0.219-0.258 & 0.043 & 0.034 & 0.017 & 0.0603  & 0.216  &  0.258 & 0.36  & 2.6475 \\
+\hline
+0.258-0.312 & 0.044 & 0.037 & 0.014 & 0.0756  & 0.212  &  0.254 & 0.35  & 2.6459 \\
+\hline
+0.312-0.391 & 0.045 & 0.041 & 0.016 & 0.0863  & 0.213  &  0.250 & 0.39  & 2.6516\\
+\hline
+0.391-0.524 & 0.048 & 0.049 & 0.015 & 0.1185  & 0.178  &  0.252 & 0.38  & 2.6492 \\
+\hline
+0.524-0.695 & 0.055 & 0.065 & 0.015 & 0.1706  & 0.213  &  0.238 & 0.34  & 2.6484 \\
+\hline
+0.695-0.918 & 0.070 & 0.088 & 0.022 & 0.2095  & 0.239  &  0.237 & 0.30  & 2.6495 \\
+\hline
+0.918-1.153 & 0.100 & 0.123 & 0.022 & 0.2991  & 0.376  &  0.233 & 0.24  & 2.6698 \\
+\hline
+1.153-1.496 & 0.157 & 0.173 & 0.024 & 0.3277  & 0.399  &  0.240 & 0.24  & 2.6827 \\
+\hline
+1.496-1.947 & 0.251 & 0.241 & 0.035 & 0.3868  & 0.493  &  0.222 & 0.27  & 2.7197\\
+\hline
+1.947-2.522 & 0.379 & 0.334 & 0.011 & 0.4664  & 0.688  &  0.235 & 0.39  & 2.8131 \\
+\hline
+2.522-3.277 & 0.48  & 0.39  & 0.013 & 0.6484  & 0.93   &  0.23  & 0.44  & 2.9452 \\
+\hline
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+For the normalized cross sections Tables~\ref{tab:elsystN}  and ~\ref{tab:musystN} provide the components of systematic uncertainties for electron and muon channels respectively.  The uncertainty in luminosity does not affect this measurement. 
+\begin{table}[htbp]
+\caption{Bin-wise systematic errors (in percentage) in the electron channel for the cross section normalized \phistar distribution due to various sources.}
+%\caption{Contributions to the relative uncertainty on the normalized differential cross-section measurement shown in figure~\ref{fig_result_norm} and table~\ref{table_result_norm}. From left to right: the total uncertainty, the statistical uncertainty, the statistical uncertainty of the simulated signal sample, the background subtraction uncertainty, thepropagated efficiency uncertainty, the pile-up uncertainty, and the FSR uncertainty.}
+\label{tab:elsystN}
+\begin{center}
+\begin{tabular}{ | c | r | r | r | r | r | r | r | } %r |}
+\hline
+$\phistar$ range & Total & Stat. & MC stat. & Bkg. & Eff. & Pile-up & FSR \\ \hline
+0.000-0.004 & 0.40 & 0.27 & 0.30 & 0.04 & 0.00 & 0.04 & 0.00  \\ \hline
+0.004-0.008 & 0.42 & 0.28 & 0.30 & 0.04 & 0.00 & 0.04 & 0.00  \\ \hline
+0.008-0.012 & 0.42 & 0.29 & 0.30 & 0.04 & 0.00 & 0.02 & 0.01  \\ \hline
+0.012-0.016 & 0.42 & 0.29 & 0.30 & 0.04 & 0.00 & 0.02 & 0.00  \\ \hline
+0.016-0.020 & 0.45 & 0.29 & 0.31 & 0.04 & 0.00 & 0.15 & 0.01  \\ \hline
+0.020-0.024 & 0.44 & 0.30 & 0.31 & 0.04 & 0.00 & 0.09 & 0.01  \\ \hline
+0.024-0.029 & 0.40 & 0.27 & 0.29 & 0.04 & 0.00 & 0.03 & 0.01  \\ \hline
+0.029-0.034 & 0.41 & 0.28 & 0.29 & 0.04 & 0.00 & 0.04 & 0.00  \\ \hline
+0.034-0.039 & 0.42 & 0.29 & 0.30 & 0.04 & 0.00 & 0.04 & 0.01  \\ \hline
+0.039-0.045 & 0.39 & 0.27 & 0.29 & 0.04 & 0.00 & 0.00 & 0.00  \\ \hline
+0.045-0.052 & 0.38 & 0.25 & 0.28 & 0.04 & 0.00 & 0.00 & 0.00  \\ \hline
+0.052-0.057 & 0.47 & 0.32 & 0.34 & 0.04 & 0.00 & 0.00 & 0.00  \\ \hline
+0.057-0.064 & 0.41 & 0.28 & 0.30 & 0.04 & 0.00 & 0.01 & 0.00  \\ \hline
+0.064-0.072 & 0.42 & 0.27 & 0.29 & 0.04 & 0.00 & 0.11 & 0.00  \\ \hline
+0.072-0.081 & 0.40 & 0.26 & 0.29 & 0.03 & 0.00 & 0.01 & 0.00  \\ \hline
+0.081-0.091 & 0.40 & 0.27 & 0.30 & 0.04 & 0.00 & 0.03 & 0.00  \\ \hline
+0.091-0.102 & 0.41 & 0.27 & 0.30 & 0.03 & 0.00 & 0.06 & 0.00  \\ \hline
+0.102-0.114 & 0.42 & 0.27 & 0.31 & 0.03 & 0.00 & 0.05 & 0.00  \\ \hline
+0.114-0.128 & 0.41 & 0.27 & 0.31 & 0.02 & 0.00 & 0.03 & 0.00  \\ \hline
+0.128-0.145 & 0.42 & 0.26 & 0.30 & 0.03 & 0.00 & 0.11 & 0.00  \\ \hline
+0.145-0.165 & 0.41 & 0.26 & 0.31 & 0.01 & 0.00 & 0.03 & 0.00  \\ \hline
+0.165-0.189 & 0.41 & 0.26 & 0.31 & 0.02 & 0.00 & 0.05 & 0.00  \\ \hline
+0.189-0.219 & 0.41 & 0.26 & 0.31 & 0.06 & 0.00 & 0.05 & 0.00  \\ \hline
+0.219-0.258 & 0.41 & 0.26 & 0.31 & 0.03 & 0.00 & 0.04 & 0.00  \\ \hline
+0.258-0.312 & 0.41 & 0.26 & 0.31 & 0.04 & 0.00 & 0.03 & 0.01  \\ \hline
+0.312-0.391 & 0.41 & 0.26 & 0.31 & 0.07 & 0.01 & 0.04 & 0.00  \\ \hline
+0.391-0.524 & 0.42 & 0.26 & 0.31 & 0.11 & 0.01 & 0.00 & 0.01  \\ \hline
+0.524-0.695 & 0.53 & 0.32 & 0.38 & 0.18 & 0.01 & 0.06 & 0.01  \\ \hline
+0.695-0.918 & 0.69 & 0.39 & 0.47 & 0.26 & 0.02 & 0.19 & 0.01  \\ \hline
+0.918-1.153 & 0.88 & 0.54 & 0.62 & 0.31 & 0.02 & 0.10 & 0.02  \\ \hline
+1.153-1.496 & 1.01 & 0.61 & 0.71 & 0.37 & 0.02 & 0.10 & 0.01  \\ \hline
+1.496-1.947 & 1.22 & 0.77 & 0.85 & 0.41 & 0.02 & 0.00 & 0.02  \\ \hline
+1.947-2.522 & 1.70 & 0.99 & 1.10 & 0.50 & 0.02 & 0.67 & 0.02  \\ \hline
+2.522-3.277 & 1.99 & 1.21 & 1.36 & 0.53 & 0.02 & 0.59 & 0.03  \\ \hline
+3.277-10.000 & 1.41 & 0.90 & 1.00 & 0.42 & 0.01 & 0.06 & 0.03  \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+
+\begin{table}
+\caption{Bin-wise systematic errors (in percentage) in the muon channel for the cross section normalized \phistar distribution due to various sources.} 
+\label{tab:musystN}
+\begin{center}
+\begin{tabular}{ | c | r | r | r | r | r | r | r | r |}% r |}
+\hline
+
+\end{tabular}
+\end{center}
+\end{table}
+
+It is evident that the systematic uncertainty due to background estimation is the minimum, whilst those due to FSR, PU and unfolding are the dominant contributo rs and are roughly of similar order, varying between 0.2 to 0.4 \%, across bins except for the last. As expected, the total uncertainty, obtained from the sum in quadrature, is impressively small compared to the statistical uncertainty. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{sec:results}
+
+{Differential cross sections and normalized spectra}
+The differential \phistar distributions, in electron and muon channels, measured
+in the fiducial region defined by the kinematics for lepton selection are presented in the left plot of Fig.~\ref{fig:EM}. These have been  compared with the predictions from  \MADGRAPH. The cross secton normalised spectra are presented in the right plot of Fig.~\ref{fig:EM}. \\
+{\bf some of these plots will be presented in different ways. Also RESBOS prediction will be compared.}
+\begin{figure}[htp]
+\begin{center}$ 
+\begin{array}{cc}
+\includegraphics[height=80mm,width=80mm]{ZShapeMuElAbsDressed.pdf}
+\includegraphics[height=80mm,width=80mm]{ZShapeMuElNormDressed.pdf}
+\end{array}$
+\caption{Differential absolute (left) and normalised (rigth) cross-section of $\phi^{*}$ in electron and muon channels.}
+\label{fig:EM}
+\end{center}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{figure}[htp]
+%\begin{center}$ 
+%\begin{array}{cc}
+%\includegraphics[height=80mm,width=80mm]{elNormDressed.pdf}
+%\includegraphics[height=80mm,width=80mm]{muNormDressed.pdf}
+%\end{array}$
+%\caption{The electron and muon channel combined $\phi^*$ spectra: differential and cross section normalized.}
+%\label{fig:NormEM}
+%\end{center}
+%\end{figure}
+
+
+\subsection*{Combination of electron and muon results}
+Individual measurements of the absolute  and normalized  spectra in electron and muon channels have been combined where the average of the central values  are considered.  The errors on the resulting distibutions have 2 components. The uncorrelated errors among the two channels are added in quadrature: (i) statistical/unfolding, (ii) lepton trigger/reconstruction/isolation efficiencies, (iii) lepton momentum scale for muon channel and (iv) Monte Carlo statistics  in electron channel only. The fully correlated uncertainties between the two channels, due to luminosity and backgrounds, are added linearly. 
+ Two other additional sources for errors with unknown correlation are handled as follows:
+\begin{itemize}
+\item FSR : The weighted distributions of the two channels are added together. The un-weighted distributions
+of the two channels are also added together. The relative difference between the resulting weighted and un-weighted
+distributions is taken to be error on the combined distribution.
+\item Pileup: The individual pileup distributions with the minimum bias cross-section varied  by $pm$ 5\% are added together. The maximum relative difference 
+w.r.t the central value is taken to be the error due to pileup.
+\end{itemize}
+
+The net errors from the 3 invidual categories are finally added in quadrature to obtain the error on the combined distribution.
+
+The combined \phistar distributions measured in the fiducial region, absolute and normalized, are presented in Fig.~\ref{fig:CMANCS}, the values are listed in Table~\ref{tab:CMANCS_ABS} and Table~\ref{tab:CMANCS_NORM}. 
+\begin{figure}[htp]
+\begin{center}$ 
+\begin{array}{cc}
+\includegraphics[height=80mm,width=80mm]{ZShapecombinedAbsDressed.pdf}
+\includegraphics[height=80mm,width=80mm]{ZShapecombinedNormDressed.pdf}
+\end{array}$
+\caption{The absolute cross section of $\phi^{*}$ and the cross section normalized $\phi^{*}$ spectrum in combined electron and muon channels.}
+\label{fig:CMANCS}
+\end{center}
+\end{figure}
+
+\begin{table}
+\caption{Differential cross-section measured in data (combined results from the muon and electon channel) and generated with MadGraph and Powheg. } 
+\label{tab:CMANCS_ABS}
+\begin{center}
+\begin{tabular}{ | c | r@{$\pm$}l | r@{$\pm$}l | r@{$\pm$}l | }
+\hline
+$\phi^*$ range & \multicolumn{2}{c}{Data \frac{d\sigma^{fid}}{d\phi*_{\eta}}(pb)} & \multicolumn{2}{c}{MadGraph \frac{d\sigma^{fid}}{d\phi*_{\eta}}(pb)} & \multicolumn{2}{c}{Powheg \frac{d\sigma^{fid}}{d\phi*_{\eta}}(pb)}\\ \hline
+0.000-0.004 & 4325 & 119 & 4155 & 138 & 3871 & 105 \\ \hline
+0.004-0.008 & 4312 & 118 & 4083 & 136 & 3881 & 105 \\ \hline
+0.008-0.012 & 4209 & 116 & 4037 & 134 & 3806 & 102 \\ \hline
+0.012-0.016 & 4121 & 113 & 3969 & 132 & 3746 & 103 \\ \hline
+0.016-0.020 & 3960 & 110 & 3879 & 129 & 3660 & 99 \\ \hline
+0.020-0.024 & 3821 & 105 & 3734 & 124 & 3642 & 100 \\ \hline
+0.024-0.029 & 3638 & 101 & 3586 & 119 & 3518 & 96 \\ \hline
+0.029-0.034 & 3410 & 94 & 3396 & 113 & 3393 & 92 \\ \hline
+0.034-0.039 & 3196 & 88 & 3192 & 106 & 3229 & 88 \\ \hline
+0.039-0.045 & 2984 & 82 & 2987 & 99 & 3071 & 83 \\ \hline
+0.045-0.052 & 2743 & 76 & 2750 & 91 & 2878 & 78 \\ \hline
+0.052-0.057 & 2533 & 70 & 2514 & 84 & 2662 & 73 \\ \hline
+0.057-0.064 & 2339 & 65 & 2335 & 78 & 2479 & 68 \\ \hline
+0.064-0.072 & 2113 & 59 & 2104 & 70 & 2257 & 62 \\ \hline
+0.072-0.081 & 1905 & 52 & 1883 & 63 & 2057 & 56 \\ \hline
+0.081-0.091 & 1693 & 46 & 1678 & 56 & 1831 & 49 \\ \hline
+0.091-0.102 & 1501 & 41 & 1471 & 49 & 1589 & 44 \\ \hline
+0.102-0.114 & 1319 & 36 & 1288 & 43 & 1392 & 38 \\ \hline
+0.114-0.128 & 1150 & 32 & 1118 & 37 & 1198 & 33 \\ \hline
+0.128-0.145 & 984 & 27 & 958 & 32 & 1008 & 27 \\ \hline
+0.145-0.165 & 824 & 23 & 797 & 27 & 824 & 22 \\ \hline
+0.165-0.189 & 677 & 19 & 648 & 22 & 676 & 18 \\ \hline
+0.189-0.219 & 538 & 15 & 517 & 17 & 536 & 15 \\ \hline
+0.219-0.258 & 416 & 11 & 394 & 13 & 412 & 11 \\ \hline
+0.258-0.312 & 304 & 8 & 287 & 10 & 298 & 8 \\ \hline
+0.312-0.391 & 204 & 6 & 192 & 6 & 197 & 5 \\ \hline
+0.391-0.524 & 120 & 3 & 112 & 4 & 114 & 3 \\ \hline
+0.524-0.695 & 63 & 2 & 59 & 2 & 58 & 2 \\ \hline
+0.695-0.918 & 31.7 & 0.9 & 29.3 & 1.0 & 28.3 & 0.7 \\ \hline
+0.918-1.153 & 16.4 & 0.5 & 15.2 & 0.5 & 14.1 & 0.4 \\ \hline
+1.153-1.496 & 8.6 & 0.2 & 8.0 & 0.3 & 7.1 & 0.2 \\ \hline
+1.496-1.947 & 4.1 & 0.1 & 4.0 & 0.1 & 3.3 & 0.1 \\ \hline
+1.947-2.522 & 1.99 & 0.06 & 1.93 & 0.07 & 1.60 & 0.06 \\ \hline
+2.522-3.277 & 1.02 & 0.03 & 0.97 & 0.03 & 0.85 & 0.03 \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}
+\caption{Nomalised differential cross-section measured in data (combined results from the muon and electon channel) and generated with MadGraph and Powheg. } 
+\label{tab:CMANCS_NORM}
+\begin{center}
+\begin{tabular}{ | c | r@{$\pm$}l | r@{$\pm$}l | r@{$\pm$}l | }
+\hline
+$\phi^*$ range & \multicolumn{2}{c}{Data \frac{1}{\sigma^{fid}}\frac{d\sigma^{fid}}{d\phi*_{\eta}}} & \multicolumn{2}{c}{MadGraph \frac{1}{\sigma^{fid}}\frac{d\sigma^{fid}}{d\phi*_{\eta}}} & \multicolumn{2}{c}{Powheg \frac{1}{\sigma^{fid}}\frac{d\sigma^{fid}}{d\phi*_{\eta}}}\\ \hline
+0.000-0.004 & 9.11 & 0.04 & 9.01 & 0.02 & 8.24 & 0.05 \\ \hline
+0.004-0.008 & 9.08 & 0.04 & 8.86 & 0.02 & 8.26 & 0.05 \\ \hline
+0.008-0.012 & 8.86 & 0.04 & 8.76 & 0.02 & 8.10 & 0.05 \\ \hline
+0.012-0.016 & 8.68 & 0.04 & 8.61 & 0.02 & 7.97 & 0.05 \\ \hline
+0.016-0.020 & 8.34 & 0.04 & 8.42 & 0.02 & 7.79 & 0.05 \\ \hline
+0.020-0.024 & 8.04 & 0.04 & 8.10 & 0.02 & 7.75 & 0.05 \\ \hline
+0.024-0.029 & 7.66 & 0.03 & 7.78 & 0.02 & 7.48 & 0.04 \\ \hline
+0.029-0.034 & 7.18 & 0.03 & 7.37 & 0.02 & 7.22 & 0.04 \\ \hline
+0.034-0.039 & 6.73 & 0.03 & 6.93 & 0.02 & 6.87 & 0.04 \\ \hline
+0.039-0.045 & 6.28 & 0.03 & 6.48 & 0.02 & 6.53 & 0.04 \\ \hline
+0.045-0.052 & 5.78 & 0.02 & 5.97 & 0.01 & 6.12 & 0.03 \\ \hline
+0.052-0.057 & 5.33 & 0.03 & 5.45 & 0.02 & 5.66 & 0.04 \\ \hline
+0.057-0.064 & 4.92 & 0.02 & 5.07 & 0.01 & 5.28 & 0.03 \\ \hline
+0.064-0.072 & 4.45 & 0.02 & 4.57 & 0.01 & 4.80 & 0.03 \\ \hline
+0.072-0.081 & 4.01 & 0.02 & 4.09 & 0.01 & 4.38 & 0.02 \\ \hline
+0.081-0.091 & 3.56 & 0.02 & 3.640 & 0.010 & 3.90 & 0.02 \\ \hline
+0.091-0.102 & 3.16 & 0.01 & 3.192 & 0.009 & 3.38 & 0.02 \\ \hline
+0.102-0.114 & 2.78 & 0.01 & 2.795 & 0.008 & 2.96 & 0.02 \\ \hline
+0.114-0.128 & 2.42 & 0.01 & 2.426 & 0.007 & 2.55 & 0.02 \\ \hline
+0.128-0.145 & 2.071 & 0.009 & 2.079 & 0.006 & 2.14 & 0.01 \\ \hline
+0.145-0.165 & 1.734 & 0.008 & 1.730 & 0.005 & 1.75 & 0.01 \\ \hline
+0.165-0.189 & 1.425 & 0.007 & 1.406 & 0.004 & 1.438 & 0.009 \\ \hline
+0.189-0.219 & 1.134 & 0.005 & 1.121 & 0.003 & 1.140 & 0.007 \\ \hline
+0.219-0.258 & 0.876 & 0.004 & 0.855 & 0.002 & 0.877 & 0.006 \\ \hline
+0.258-0.312 & 0.639 & 0.003 & 0.622 & 0.002 & 0.635 & 0.004 \\ \hline
+0.312-0.391 & 0.430 & 0.002 & 0.417 & 0.001 & 0.420 & 0.003 \\ \hline
+0.391-0.524 & 0.252 & 0.001 & 0.2421 & 0.0007 & 0.243 & 0.002 \\ \hline
+0.524-0.695 & 0.1320 & 0.0007 & 0.1271 & 0.0004 & 0.1224 & 0.0010 \\ \hline
+0.695-0.918 & 0.0667 & 0.0005 & 0.0635 & 0.0003 & 0.0602 & 0.0006 \\ \hline
+0.918-1.153 & 0.0345 & 0.0003 & 0.0330 & 0.0002 & 0.0300 & 0.0004 \\ \hline
+1.153-1.496 & 0.0180 & 0.0002 & 0.0174 & 0.0001 & 0.0151 & 0.0003 \\ \hline
+1.496-1.947 & 0.0086 & 0.0001 & 0.00865 & 0.00007 & 0.0070 & 0.0002 \\ \hline
+1.947-2.522 & 0.00418 & 0.00008 & 0.00420 & 0.00004 & 0.00340 & 0.00009 \\ \hline
+2.522-3.277 & 0.00215 & 0.00005 & 0.00211 & 0.00003 & 0.00181 & 0.00006 \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+The prediction from \MADGRAPH generator, which emulates DY events with upto 4jets at leading order matches with the data very within about 3\% over the whole range of \phistar. On the other
+hand, the \POWHEG generator being accurate up to NLO only cannot account for  more than one hard jets in the event. This results in relatively softer $q_T$ spectrum and hence smaller event yield in high \phistar region, resulting in the large disagreement between data and MC. This effect is also manifested in the cross section normalized spectrum.
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{sec:conclusion}
+The  angular variable \phistar is sensitive to the transverse momentum of the \cPZ boson and provides a sensitive test for the  techniques needed to describe the behaviour of the variables at lower end of the spectrum.
+Using high statistics Drell--Yan events recorded in CMS at LHC centre of mass energy of 8 TeV, $\phi^*$ distributions have been measured in both electron and muon channels. The absolute cross section determined within the fiducial as well as cross section normalized spectrum have been presented and compared with some of the theoretical predictions.   Overall all the results from \MADGRAPH shows better agreement with data compared to \POWHEG. {\bf shall put in more dicussion after RESBOS results are available}
+\clearpage
