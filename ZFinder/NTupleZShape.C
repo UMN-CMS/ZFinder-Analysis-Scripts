@@ -27,6 +27,10 @@
 #include <iostream>
 #include <fstream>
 
+
+//#include <locale>
+
+using namespace std;
 const int Ntoys = 500;
 const int Ntoys2 = 100;
 const int elec = 2;
@@ -291,6 +295,20 @@ double Return_RMS(double mean_sq, double mean) {
     return sqrt(mean_sq - mean * mean);
 }
 
+TH1D * ConvertToHist(TGraphAsymmErrors* g, std::string name) {
+    TH1D* h_temp;
+    h_temp = new TH1D(name.c_str(), name.c_str(), nphistar, phistarBins);
+    h_temp->Sumw2();
+    for (size_t iphistar = 0; iphistar < nphistar; iphistar++) {
+        double x, y;
+        g->GetPoint(iphistar, x, y);
+        double error = g->GetErrorYhigh(iphistar);
+        h_temp->SetBinContent(iphistar + 1, y);
+        h_temp->SetBinError(iphistar + 1, error);
+    }
+    return h_temp;
+}
+
 void Cov_Mat_Creator(vector<TH1D *> HistoVector, TH2D* Covar_hist) {//makes the covariance matrix if given TH1D.
     int Niter = HistoVector.size(); //number of toys
     const int nphistar_bins = 35;
@@ -339,55 +357,21 @@ void Cov_Mat_Creator(vector<TH1D *> HistoVector, TH2D* Covar_hist) {//makes the 
 
 void Cov_Mat_Creator(vector<TGraphAsymmErrors*> test, TH2D* Covar_hist) {
     int Niter = test.size(); //number of toys
-    const int nphistar_bins = 35;
-    double phistar_var[nphistar_bins] = {0.0, 0.004, 0.008, 0.012, 0.016, 0.020, 0.024, 0.029, 0.034, 0.039, 0.045, 0.051, 0.057, 0.064, 0.072, 0.081, 0.091, 0.102, 0.114, 0.128, 0.145, 0.165, 0.189, 0.219, 0.258, 0.312, 0.391, 0.524, 0.695, 0.918, 1.153, 1.496, 1.947, 2.522, 3.277};
-
-    double Mean_SUM[nphistar_bins - 1] = {0.};
-    double Mean_SQ_SUM[nphistar_bins - 1] = {0.};
-    double Mean_PROD_SUM[nphistar_bins - 1][nphistar_bins - 1] = {0.};
-    double Mean_j = 0.;
-    double Mean_k = 0;
-    double RMS_j = 0.;
-    double RMS_k = 0;
-    double Correlation = 0.;
-    double Covariance = 0.;
 
 
-    TH2D *Correl_hist = new TH2D("Correl_hist", "Correl_hist", nphistar_bins - 1, phistar_var, nphistar_bins - 1, phistar_var); // figure it coul be useful so keeping it around but not saving it
-
-    //for (int i = 0; i < Niter; i++) {
-    //    if (debug) {
-    //       double x, y;
-    //         test[i]->GetPoint(2, x, y);
-    // cout<<" our x and y are "<<x<<"  "<<y<<endl;
-    //     }
-    //}
-    //sprintf(name,"hReco_%i",i);
-
-    //cout<<"and the scale is? :"<<h->Integral()<<endl;
-    //    h->Scale(1/h->Integral());
-
+    vector<TH1F*> HistoHolder;
     for (int w = 0; w < Niter; w++) {
         //sprintf(name,"hReco_%i",i);
         //TH1F* h = (TH1F*) HistoVector[w];
-        TH1D* h = new TH1D("Temp", "Temp", 35, phistarBins);
-        for (int j = 1; j < 35; j++) {
-            double x, y;
-            test[w]->GetPoint(j, x, y);
-            h->Fill(x, y);
-        }
-        
-
-        h->Scale(1 / h->Integral());
-        for (int j = 1; j < 35; j++) {
-            Mean_SUM[j - 1] += h->GetBinContent(j);
-            Mean_SQ_SUM[j - 1] += pow(h->GetBinContent(j), 2);
-            for (int k = 1; k < 35; k++) {
-                Mean_PROD_SUM[j - 1][k - 1] += h->GetBinContent(j) * h->GetBinContent(k);
-            }
-        }
+        ostringstream namesnumber;
+        namesnumber << w;
+        string name = "Histo" + namesnumber.str();
+        TH1D* h = ConvertToHist(test[w], name);
+        HistoHolder.push_back(h);
     }
 
+}
+/*
     for (int j = 1; j < 35; j++) {
         Mean_j = Mean_SUM[j - 1] / Niter;
         RMS_j = Return_RMS(Mean_SQ_SUM[j - 1] / Niter, Mean_j);
@@ -399,8 +383,8 @@ void Cov_Mat_Creator(vector<TGraphAsymmErrors*> test, TH2D* Covar_hist) {
             Covar_hist->SetBinContent(j - 1, k - 1, Covariance);
             Correl_hist->SetBinContent(j - 1, k - 1, Correlation);
         }
-    }
-    //return Covar_hist;
+    }*/
+//return Covar_hist;
 
 
 }
@@ -998,20 +982,6 @@ TGraphAsymmErrors * ConvertToTGraph(TH1D * h) {
     return g;
 }
 
-TH1D * ConvertToHist(TGraphAsymmErrors* g, std::string name) {
-    TH1D* h_temp;
-    h_temp = new TH1D(name.c_str(), name.c_str(), nphistar, phistarBins);
-    h_temp->Sumw2();
-    for (size_t iphistar = 0; iphistar < nphistar; iphistar++) {
-        double x, y;
-        g->GetPoint(iphistar, x, y);
-        double error = g->GetErrorYhigh(iphistar);
-        h_temp->SetBinContent(iphistar + 1, y);
-        h_temp->SetBinError(iphistar + 1, error);
-    }
-    return h_temp;
-}
-
 vector<TGraphAsymmErrors *> CreateCopy(vector<TGraphAsymmErrors *> graphvec) {
     vector<TGraphAsymmErrors *> newvec;
     for (int i = 0; i < graphvec.size(); i++) {//just getting rid of the warnings 
@@ -1532,7 +1502,6 @@ void GetBinM(double sampleweight, vector<RooUnfoldResponse*> &BinM_eff, vector<R
 }
 
 void NTupleZShape() {
-    cout << "test .1" << endl;
     double Lumi = 19712.;
     double ttbar_weight = 23.64 / 4246440.;
     double tautau_weight = 1966.7 / 47271600.;
@@ -1543,20 +1512,14 @@ void NTupleZShape() {
     double zz_weight = 17.0 / 9799908.;
     double signal_weight = 3531.89 / 30459500.; //3504
     if (!doMG) signal_weight = 1966.7 / 3297045.;
-    cout << "test .2" << endl;
     TH1D* Data = GetDataPhiStar(1. / Lumi);
-    cout << "test .21" << endl;
     TH1D* Data_down = GetDataPhiStarPt(1. / Lumi, -1);
-    cout << "test .22" << endl;
     TH1D* Data_up = GetDataPhiStarPt(1. / Lumi, 1);
     // TH1D* Data_down=(TH1D*)Data->Clone();
     // TH1D* Data_up  =(TH1D*)Data->Clone();
-    cout << "test .23" << endl;
     vector<TH2D*> h_ToyEffSF = GetEffSFToys();
-    cout << "test .24" << endl;
     vector<TH2D*> h_ToyEffMSF = GetEffSFToys(1);
     vector<TH2D*> h_ToyEffTSF = GetEffSFToys(2);
-    cout << "test .25" << endl;
     vector<TH2D*> h_ToyEffTMC = GetEffTMCToys(1);
     vector<TH2D*> h_ToyEffTData = GetEffTMCToys(0);
     vector<TH1D*> h_tt_eff, h_tt_fsr_pileup;
@@ -1566,7 +1529,6 @@ void NTupleZShape() {
     vector<TH1D*> h_ww_eff, h_ww_fsr_pileup;
     vector<TH1D*> h_wz_eff, h_wz_fsr_pileup;
     vector<TH1D*> h_zz_eff, h_zz_fsr_pileup;
-    cout << "test .3" << endl;
     GetBGPhiStar(File_tt, ttbar_weight, h_tt_eff, h_tt_fsr_pileup, h_ToyEffSF, h_ToyEffMSF, h_ToyEffTSF, h_ToyEffTMC, h_ToyEffTData);
     GetBGPhiStar(File_tautau, tautau_weight, h_tautau_eff, h_tautau_fsr_pileup, h_ToyEffSF, h_ToyEffMSF, h_ToyEffTSF, h_ToyEffTMC, h_ToyEffTData);
     GetBGPhiStar(File_tbarw, tbarw_weight, h_tbarw_eff, h_tbarw_fsr_pileup, h_ToyEffSF, h_ToyEffMSF, h_ToyEffTSF, h_ToyEffTMC, h_ToyEffTData);
@@ -1574,17 +1536,14 @@ void NTupleZShape() {
     GetBGPhiStar(File_ww, ww_weight, h_ww_eff, h_ww_fsr_pileup, h_ToyEffSF, h_ToyEffMSF, h_ToyEffTSF, h_ToyEffTMC, h_ToyEffTData);
     GetBGPhiStar(File_wz, wz_weight, h_wz_eff, h_wz_fsr_pileup, h_ToyEffSF, h_ToyEffMSF, h_ToyEffTSF, h_ToyEffTMC, h_ToyEffTData);
     GetBGPhiStar(File_zz, zz_weight, h_zz_eff, h_zz_fsr_pileup, h_ToyEffSF, h_ToyEffMSF, h_ToyEffTSF, h_ToyEffTMC, h_ToyEffTData);
-    cout << "test .4" << endl;
     TFile f_bg("ratio_data_mc_emu.root");
     TCanvas *c_bg = (TCanvas*) f_bg.Get("Canvas_1");
     TH1F *bg_sf_full = (TH1F*) c_bg->FindObject("hPull");
     bg_sf_full->Sumw2();
-    cout << "test .5" << endl;
     vector<TH1D*> bg_sf = GetToyBg(bg_sf_full);
     TFile f_ss("SS.root");
     TH1D *ss_full = (TH1D*) f_ss.Get("qcd_phistar");
     ss_full->Sumw2();
-    cout << "test .6" << endl;
     TH1D* bg_ss = GetBgSS(ss_full);
 
     PrintBG(Data, h_tt_eff[0], h_tautau_eff[0], h_tbarw_eff[0], h_tw_eff[0], h_ww_eff[0], h_wz_eff[0], h_zz_eff[0], bg_ss);
@@ -1592,7 +1551,6 @@ void NTupleZShape() {
     vector<TH1D*> h_data_eff = RemoveBG(Data, bg_sf[0], bg_ss, h_tt_eff, h_tautau_eff, h_tbarw_eff, h_tw_eff, h_ww_eff, h_wz_eff, h_zz_eff);
     vector<TH1D*> h_data_fsr_pileup = RemoveBG(Data, bg_sf[0], bg_ss, h_tt_fsr_pileup, h_tautau_fsr_pileup, h_tbarw_fsr_pileup, h_tw_fsr_pileup, h_ww_fsr_pileup, h_wz_fsr_pileup, h_zz_fsr_pileup);
     vector<TH1D*> h_data_bg;
-    cout << "test 1" << endl;
     for (size_t idx = 0; idx < Ntoys + 5; idx++) {
         TH1D* bgtemp = (TH1D*) h_tt_eff[0]->Clone();
         bgtemp->Add(h_tautau_eff[0], 1.0);
@@ -1625,7 +1583,6 @@ void NTupleZShape() {
         datatemp->Add(bg_ss, scaless);
         h_data_bg.push_back(datatemp);
     }
-    cout << "test 1.2" << endl;
     vector<TH1D*> h_data_pt;
     TH1D* bgtemp = (TH1D*) h_tt_eff[0]->Clone();
     bgtemp->Add(h_tautau_eff[0], 1.0);
@@ -1644,7 +1601,6 @@ void NTupleZShape() {
     vector<RooUnfoldResponse*> BinM_eff, BinM_mcstat, BinM_cteq, BinM_fsr_pileup;
     vector<TH1D*> mc_truereco_eff, mc_truereco_cteq, mc_truereco_fsr_pileup;
     GetBinM(signal_weight, BinM_eff, BinM_mcstat, BinM_cteq, BinM_fsr_pileup, mc_truereco_eff, mc_truereco_cteq, mc_truereco_fsr_pileup, h_ToyEffSF, h_ToyEffMSF, h_ToyEffTSF, h_ToyEffTMC, h_ToyEffTData);
-    cout << "test 1.3" << endl;
     TH1D* mc_truegen;
     vector<TH1D*> mc_truegen_cteq, mc_truegen_fsr_pileup;
     GetGenPhiStar(signal_weight, mc_truegen, mc_truegen_cteq, mc_truegen_fsr_pileup);
@@ -1657,7 +1613,6 @@ void NTupleZShape() {
     for (uint idx = 0; idx < nphistar; idx++) {
         eff_0->SetBinError(idx + 1, 0);
     }
-    cout << "test 1.4" << endl;
     vector<TGraphAsymmErrors *> g_data_phistar_unf = GetUnfoldedData(BinM_eff[0], h_data_eff[0], eff_0);
     vector<TGraphAsymmErrors *> g_data_phistar_eff = GetUnfoldedData(BinM_eff, h_data_eff, h_eff_eff);
     vector<TGraphAsymmErrors *> g_data_phistar_bg = GetUnfoldedData(BinM_eff, h_data_bg, h_eff_eff, 1);
@@ -1674,7 +1629,6 @@ void NTupleZShape() {
     vector<TGraphAsymmErrors *> g_data_norm_cteq = CreateCopy(g_data_phistar_cteq);
     vector<TGraphAsymmErrors *> g_data_norm_fsr_pileup = CreateCopy(g_data_phistar_fsr_pileup);
     vector<TGraphAsymmErrors *> g_data_norm_mcstat = CreateCopy(g_data_phistar_mcstat);
-    cout << "test 1.5" << endl;
     //first get absolute distributions
     cout << "done unfolding, going to normalise" << endl;
     NormalizeGraph(g_data_phistar_unf);
@@ -1699,14 +1653,9 @@ void NTupleZShape() {
 
     TFile Cov("CovariantMatrix.root", "RECREATE");
     unf_Covariant_Matrix->Write();
-
     eff_Covariant_Matrix->Write();
-
-
     bg_Covariant_Matrix->Write();
-
     cteq_Covariant_Matrix->Write();
-
     mcstat_Covariant_Matrix->Write();
 
     //probalbly will change this more proof of concept
@@ -1765,9 +1714,9 @@ void NTupleZShape() {
     syst_list.push_back("pt");
     if (!doMG) syst_list.push_back("cteq");
 
-    // if (doNorm) printf("%10s : %26s : %10s : %10s : %10s : %10s : %10s : %10s : %10s : %10s \n","bin","phistar        ","total","unfolding","MC stat","pt","efficiency","background","fsr","pile-up");
+    if (doNorm) printf("%10s : %26s : %10s : %10s : %10s : %10s : %10s : %10s : %10s : %10s \n", "bin", "phistar        ", "total", "unfolding", "MC stat", "pt", "efficiency", "background", "fsr", "pile-up");
     cout << "test 20" << endl;
-    printf("%10s : %26s : %10s : %10s : %10s : %10s : %10s : %10s : %10s : %10s : %10s \n", "bin", "phistar        ", "total", "unfolding", "luminosity", "MC stat", "pt", "efficiency", "background", "fsr", "pile-up");
+    //printf("%10s : %26s : %10s : %10s : %10s : %10s : %10s : %10s : %10s : %10s : %10s \n", "bin", "phistar        ", "total", "unfolding", "luminosity", "MC stat", "pt", "efficiency", "background", "fsr", "pile-up");
 
     TGraphAsymmErrors* g_data_final = GetDataFinal(g_data_syst, syst_list);
 
@@ -1858,7 +1807,6 @@ void NTupleZShape() {
     syst_list_norm.push_back("pileup");
     syst_list_norm.push_back("pt");
     if (!doMG) syst_list_norm.push_back("cteq");
-    cout << "test 21" << endl;
     printf("%10s : %26s : %10s : %10s : %10s : %10s : %10s : %10s : %10s : %10s \n", "bin", "phistar        ", "total", "unfolding", "MC stat", "pt", "efficiency", "background", "fsr", "pile-up");
 
     TGraphAsymmErrors* g_data_final_norm = GetDataFinal(g_data_syst_norm, syst_list_norm, 1);
