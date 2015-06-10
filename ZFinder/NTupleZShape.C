@@ -267,7 +267,7 @@ const double EfficiencyTightSF[5][4][3] = {
 };
 
 const double phistarBins[] = {0.000, 0.004, 0.008, 0.012, 0.016, 0.020, 0.024, 0.029, 0.034, 0.039, 0.045, 0.052, 0.057, 0.064, 0.072, 0.081, 0.091, 0.102, 0.114, 0.128, 0.145, 0.165, 0.189, 0.219, 0.258, 0.312, 0.391, 0.524, 0.695, 0.918, 1.153, 1.496, 1.947, 2.522, 3.277, 10};
-size_t nphistar = (sizeof (phistarBins) / sizeof (phistarBins[0])) - 1;
+const size_t nphistar = (sizeof (phistarBins) / sizeof (phistarBins[0])) - 1;
 
 std::string File_Data = "/afs/cern.ch/work/r/ruckstuh/public/Data_R9.root";
 std::string File_Data_Pt_L = "/afs/cern.ch/work/r/ruckstuh/public/Data_Low_R9.root";
@@ -295,7 +295,7 @@ std::string reco_name_en_h = "Combined Single Higher Threshold Reco";
 std::string gen_name = "Combined Gen Cuts Reco";
 
 void MakeCovTMatrix(TH2D* CovHisto, TMatrixD& CovMatrix)//this is for the Toy MC sample since I already made a histogram but it was asked I make a TMatrix 
-{// since I decided histograms were useful in there own way and I wanted to save them this seemed the best way to deadl with tehm
+{// since I decided histograms were useful in there own way and I wanted to save them this seemed the best way to deal with them
 
     for (size_t iphistarx = 0; iphistarx < nphistar; iphistarx++) {
         for (size_t iphistary = 0; iphistary < nphistar; iphistary++) {
@@ -353,12 +353,16 @@ double Return_RMS(double mean_sq, double mean) {
 
 TH1D * ConvertToHist(TGraphAsymmErrors* g, std::string name) {
     TH1D* h_temp;
+
     h_temp = new TH1D(name.c_str(), name.c_str(), nphistar, phistarBins);
     h_temp->Sumw2();
+
     for (size_t iphistar = 0; iphistar < nphistar; iphistar++) {
         double x, y;
         g->GetPoint(iphistar, x, y);
+
         double error = g->GetErrorYhigh(iphistar);
+
         h_temp->SetBinContent(iphistar + 1, y);
         h_temp->SetBinError(iphistar + 1, error);
     }
@@ -405,7 +409,7 @@ void Cov_Histo_Creator(vector<TH1D *> HistoVector, TH2D* Covar_hist, TH2D* Corre
             RMS_k = Return_RMS(Mean_SQ_SUM[k - 1] / Niter, Mean_k);
             Covariance = ((Mean_PROD_SUM[j - 1][k - 1] / Niter) - Mean_j * Mean_k);
             Correlation = ((Mean_PROD_SUM[j - 1][k - 1] / Niter) - Mean_j * Mean_k) / (RMS_j * RMS_k);
-            if (j == k && j > 20 && MatrixName.length() > 2) {
+            if (j == k && MatrixName.length() > 2) {
                 cout << " okay the mean product is :" << Mean_PROD_SUM[j - 1][k - 1] / Niter << "  and the other half is " << Mean_j * Mean_k;
                 cout << " and the subtraction of the two gives us :" << Covariance << endl;
             }
@@ -420,15 +424,23 @@ void Cov_Histo_Creator(vector<TH1D *> HistoVector, TH2D* Covar_hist, TH2D* Corre
 void Cov_Histo_Creator(vector<TGraphAsymmErrors*> test, TH2D* Covar_hist, TH2D* Correl_hist) {
     int Niter = test.size(); //number of toys
     vector<TH1D*> HistoHolder;
+
+
     for (int w = 0; w < Niter; w++) {
         //sprintf(name,"hReco_%i",i);
         //TH1F* h = (TH1F*) HistoVector[w];
         ostringstream namesnumber;
         namesnumber << w;
         string name = "Histo" + namesnumber.str();
+
         TH1D* h = ConvertToHist(test[w], name);
+        for(int i=1; (i<((int) nphistar))&&w==0&&MatrixName.length() > 2;i++){
+        cout<<"and this should be the same but isn't? :"<<h->GetBinContent(i)<<"  bin number "<<i<<endl;}
         HistoHolder.push_back(h);
+
     }
+
+
     Cov_Histo_Creator(HistoHolder, Covar_hist, Correl_hist);
 }
 
@@ -1479,7 +1491,7 @@ void GetBinM(double sampleweight, vector<RooUnfoldResponse*> &BinM_eff, vector<R
 
     for (int i = 0; i < t->GetEntries()&&(!debug || i < 10000); i++) {
         double Percent = i;
-        Percent = Percent / (double(t->GetEntries())*100);
+        Percent = 100 * Percent / (double(t->GetEntries()));
         if (!(i % 10000))cout << "percent done? " << Percent << endl;
         //for (int i=0; i<50000;i++){
         t->GetEntry(i);
@@ -1805,22 +1817,25 @@ void NTupleZShape() {
     } else {
         MakeCovTMatrix(g_syst_phistar_eff, reff_Covariant_Matrix);
     }
-    if (debug)cout << "test 1" << endl;
+
     TMatrixD eff_Covariant_Matrix(reff_Covariant_Matrix);
     TMatrixD meff_Covariant_Matrix(nphistar, nphistar);
-    if (debug)cout << "test 2" << endl;
+
     if (g_syst_phistar_meff_Vector.size() > 10) {
         TH2D *meff_Covariant_Matrix_Histo = new TH2D("meff_Covariant_Matrix_Histo", "Covar_hist", nphistar, phistarBins, nphistar, phistarBins);
         TH2D* meff_Correl_hist = new TH2D("meff_Correl_hist", "Correlation", nphistar, phistarBins, nphistar, phistarBins);
+
         Cov_Histo_Creator(g_syst_phistar_meff_Vector, meff_Covariant_Matrix_Histo, meff_Correl_hist);
+
         MakeCovTMatrix(meff_Covariant_Matrix_Histo, meff_Covariant_Matrix);
+
         meff_Covariant_Matrix_Histo->Write();
         meff_Correl_hist->Write();
     } else {
         MakeCovTMatrix(g_syst_phistar_eff, meff_Covariant_Matrix);
     }
     eff_Covariant_Matrix = eff_Covariant_Matrix + meff_Covariant_Matrix;
-    if (debug)cout << "test 3" << endl;
+
     TMatrixD teff_m_Covariant_Matrix(nphistar, nphistar);
 
     if (g_syst_phistar_teff_m_Vector.size() > 10) {
@@ -1834,7 +1849,7 @@ void NTupleZShape() {
         MakeCovTMatrix(g_syst_phistar_eff, teff_m_Covariant_Matrix);
     }
     eff_Covariant_Matrix = eff_Covariant_Matrix + teff_m_Covariant_Matrix;
-    if (debug)cout << "test 4" << endl;
+
     TMatrixD teff_d_Covariant_Matrix(nphistar, nphistar);
 
     if (g_syst_phistar_teff_d_Vector.size() > 10) {
@@ -1849,7 +1864,7 @@ void NTupleZShape() {
     }
 
     eff_Covariant_Matrix = eff_Covariant_Matrix + teff_d_Covariant_Matrix;
-    if (debug)cout << "test 5" << endl;
+
     TMatrixD mcstat_Covariant_Matrix(nphistar, nphistar);
 
     if (g_data_phistar_mcstat.size() > 10) {
@@ -1862,12 +1877,15 @@ void NTupleZShape() {
     } else {
         MakeCovTMatrix(g_syst_phistar_mcstat, mcstat_Covariant_Matrix);
     }
-    if (debug)cout << "test 6" << endl;
+
     TMatrixD bg_Covariant_Matrix(nphistar, nphistar);
     if (g_data_phistar_bg.size() > 10) {
         TH2D *bg_Covariant_Matrix_Histo = new TH2D("bg_Covariant_Matrix_Histo", "Covar_hist", nphistar, phistarBins, nphistar, phistarBins);
         TH2D* bg_Correl_hist = new TH2D("bg_Correl_hist", "Correlation", nphistar, phistarBins, nphistar, phistarBins);
         MatrixName = "BGMatrix";
+        double x,y;
+        g_data_phistar_bg[0]->GetPoint(0,x,y);
+        cout<<" and our value is :"<<y<<endl;
         Cov_Histo_Creator(g_data_phistar_bg, bg_Covariant_Matrix_Histo, bg_Correl_hist);
         MakeCovTMatrix(bg_Covariant_Matrix_Histo, bg_Covariant_Matrix);
         bg_Covariant_Matrix_Histo->Write();
@@ -1875,20 +1893,20 @@ void NTupleZShape() {
     } else {
         MakeCovTMatrix(g_syst_phistar_bg, bg_Covariant_Matrix);
     }
-    if (debug)cout << "test 7" << endl;
+
     TMatrixD Pilup_Matrix(nphistar, nphistar);
     MakeCovTMatrix(g_syst_phistar_pu, Pilup_Matrix);
-    if (debug)cout << "test 8" << endl;
+
     TMatrixD PtMatrix(nphistar, nphistar);
     MakeCovTMatrix(g_syst_phistar_pt, PtMatrix);
-    if (debug)cout << "test 9" << endl;
+
     TMatrixD LumMatrix(nphistar, nphistar);
     double LumiError = .026; // error in luminosity
     MakeCovTMatrix(g_data_phistar_eff[0], LumMatrix, LumiError); //if I understand everything the first element in most of the systems should be a the orginal so I just chose this one
-if (debug)cout << "test 10" << endl;
+
     TMatrixD h_eff_effMatrix(nphistar, nphistar);
     MakeCovTMatrix(h_eff_eff[0], h_eff_effMatrix);
-if (debug)cout << "test 11" << endl;
+
     unf_Covariant_Matrix.Write("Unfolded");
     eff_Covariant_Matrix.Write("Efficency");
     h_eff_effMatrix.Write("MCStatBinbyBin");
@@ -1930,6 +1948,13 @@ if (debug)cout << "test 11" << endl;
     if (elec == 2)textn += "Naked.root";
     TFile tr2(textn.c_str(), "RECREATE");
     g_data_final->Write();
+    
+    for(int i =0 ;i < ((int)nphistar)&&debug ; i++)
+    {
+        double x,y;
+        g_data_final->GetPoint(i,x,y);
+        cout<<" and last we have :"<<y<<endl;
+    }
 
     //Now for the normalised distribution:
 
@@ -2020,4 +2045,5 @@ if (debug)cout << "test 11" << endl;
     TFile tr4(textn.c_str(), "RECREATE");
     cout << "file name " << textn << endl;
     g_data_final_norm->Write();
+    
 }
