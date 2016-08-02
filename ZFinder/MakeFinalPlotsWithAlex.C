@@ -25,7 +25,7 @@
 #include <iostream>
 #include <fstream>
 
-
+const bool AlexPlots = false;
 const bool doNorm = 1;
 const bool debug = true;
 const int elec = 0;
@@ -37,7 +37,7 @@ const double phistarBins[] = {0.000, 0.004, 0.008, 0.012, 0.016, 0.020, 0.024, 0
 size_t nphistar = (sizeof (phistarBins) / sizeof (phistarBins[0])) - 1;
 const double PHDataUnfoldUncertainty[] = {.0082, .0093, .0099, .0103, .0089, .0096, .0091, .0084, .0088, .0077, .0077, .0099, .0081, .0078, .0077, .0075, .0076,
     .0078, .0076, .0076, .0081, .0076, .0076, .0076, .0074, .0075, .0081, .0096, .0122, .0166, .0188, .0234, .0299, .0364};
-const double YSeperation[] = {.2,.4, .6,.8,1,1.2,1.4,1.6};
+
 void ChiSquared(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, TGraphAsymmErrors* g_ph_final) {
 
     std::string CovarianceMatrixEff = "CovarianceMatrixAbs_MG_Dressed.root";
@@ -116,7 +116,7 @@ void AlexsPlots(TGraphAsymmErrors* g_ph2_finalAlex, TGraphAsymmErrors* g_ph1_fin
 
     const double PowErrorsPer[] = {0.63, 0.63, 0.65, 0.65, 0.65, 0.65, 0.60, 0.60, 0.62, 0.58, 0.55,
         0.68, 0.60, 0.59, 0.57, 0.57, 0.61, 0.60, 0.61, 0.60, 0.62, 0.64, 0.65, 0.63, 0.63, 0.65, 0.67, 0.81, 1.05, 1.47, 1.74, 2.15, 2.76, 3.26}; //powheg percentage error]
-    const std::string textn = "output1.root";
+    const std::string textn = "/home/user1/lesko/work/Downloads/output.root";
     TFile tr2(textn.c_str());
     TH1D* h_PH1_temp = (TH1D*) tr2.Get("phi_1"); //Powheg stuff
     TH1D* h_PH2_temp = (TH1D*) tr2.Get("phi_2"); //Powheg stuff
@@ -338,7 +338,7 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
             leg->AddEntry(g_mg_final, "Z #rightarrow ee MadGraph+Pythia6 (Z2star)", "P");
             leg->AddEntry(g_ph_final, "Z #rightarrow ee POWHEG+Pythia6 (Z2star)", "P");
             if (AlexPlots && doNorm) {
-                leg->AddEntry(g_ph2_finalAlex, "Z #rightarrow ee POWHEG+Pythia8 (Tunepp 16)", "P");
+                leg->AddEntry(g_ph2_finalAlex, "Z #rightarrow ee POWHEG+Pythia8 (Tunepp 5)", "P");
                 leg->AddEntry(g_ph1_finalAlex, "Z #rightarrow ee POWHEG+Pythia8 (Tunepp 14)", "P");
             }
         }
@@ -490,7 +490,7 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
             leg2->AddEntry(g_mg_final, "Z #rightarrow ee MadGraph+Pythia6 (Z2star)", "P");
             leg2->AddEntry(g_ph_final, "Z #rightarrow ee POWHEG+Pythia6 (Z2star)", "P");
             if (AlexPlots && doNorm) {
-                leg2->AddEntry(g_ratio_ph2_phistarAlex, "Z #rightarrow ee POWHEG+Pythia8  (Tunepp 16)", "P");
+                leg2->AddEntry(g_ratio_ph2_phistarAlex, "Z #rightarrow ee POWHEG+Pythia8  (Tunepp 5)", "P");
                 leg2->AddEntry(g_ratio_ph1_phistarAlex, "Z #rightarrow ee POWHEG+Pythia8 (Tunepp 14)", "P");
             }
         }
@@ -669,5 +669,89 @@ void MakeFinalPlots() {
     PrintFinal(g_data_final, g_mg_final, g_ph_final);
     ChiSquared(g_data_final, g_mg_final, g_ph_final);
     PlotFinal(g_data_final, g_mg_final, g_ph_final, g_dummy_phistar, g_ratio_phistar, g_ratio_mg_phistar, g_ratio_ph_phistar);
+}
+
+TH1D* GetHistMuon(std::string name) {
+    TH1D* h_Muon = new TH1D("h_Comb", "h_Comb", nphistar, phistarBins);
+    h_Muon->Sumw2();
+    TFile fm(name.c_str());
+    TH1F *h_temp = (TH1F*) fm.Get("hRecoClone1");
+    for (uint i = 0; i < nphistar; i++) {
+        h_Muon->SetBinContent(i + 1, h_temp->GetBinContent(i + 1));
+        h_Muon->SetBinError(i + 1, h_temp->GetBinError(i + 1));
+    }
+    return h_Muon;
+}
+
+void MakeFinalPlots2() {
+
+    TGraphAsymmErrors* g_mg_final;
+    TGraphAsymmErrors* g_data_muon;
+    TGraphAsymmErrors* g_data_elec;
+
+    std::string textn = "Data_Graph_";
+    textn += Tag;
+    if (doNorm) textn += "Norm_";
+    else textn += "Abs_";
+    textn += "MG_";
+    if (elec == 0)textn += "Dressed.root";
+    if (elec == 1)textn += "Born.root";
+    if (elec == 2)textn += "Naked.root";
+    cout << textn.c_str() << endl;
+    TFile dg(textn.c_str());
+    TGraphAsymmErrors* g_data_temp = (TGraphAsymmErrors*) dg.Get("Graph");
+    g_data_elec = CreateCopy(g_data_temp);
+    textn = "Data_Graph_MC_";
+    textn += Tag;
+    if (doNorm) textn += "Norm_";
+    else textn += "Abs_";
+    textn = "Comb_Hist_MC_";
+    textn += Tag;
+    if (doNorm) textn += "Norm_";
+    else textn += "Abs_";
+    textn += "MG_";
+    textn += "Dressed.root";
+    TFile tr2(textn.c_str());
+    TH1D* h_mg_temp = (TH1D*) tr2.Get("h_Comb");
+    TGraphAsymmErrors* g_mg_temp = ConvertToTGraph(h_mg_temp);
+    g_mg_final = CreateCopy(g_mg_temp);
+    //   textn+="MG_";
+    // if (elec==0)textn+="Dressed.root";
+    // if (elec==1)textn+="Born.root";
+    // if (elec==2)textn+="Naked.root";
+    // cout<<textn.c_str()<<endl;
+    // TFile mg(textn.c_str());  
+    // TGraphAsymmErrors* g_mg_temp= (TGraphAsymmErrors*)mg.Get("Graph");
+    // g_mg_final=CreateCopy(g_mg_temp);
+    std::string muon_name = "Muon_CrossSection_For_Combination/Madgraph_Dressed_";
+    if (doNorm) muon_name += "Normal_";
+    else muon_name += "Absolute_";
+    muon_name += "Central_Full_Errors.root";
+    TH1D* h_Muon_temp = GetHistMuon(muon_name);
+    if (!doNorm) {
+        h_Muon_temp->Scale(1. / 1000.);
+    }
+    g_data_muon = ConvertToTGraph(h_Muon_temp);
+
+    cout << "going to make ratio plots" << endl;
+    TGraphAsymmErrors* g_dummy_phistar = CreateDummy(g_mg_final);
+    TGraphAsymmErrors* g_ratio_elec = CreateRatio(g_mg_final, g_data_elec, 0);
+    TGraphAsymmErrors* g_ratio_mg = CreateRatio(g_mg_final, g_mg_final, 1);
+    TGraphAsymmErrors* g_ratio_muon = CreateRatio(g_mg_final, g_data_muon, 0);
+    //
+    //  PrintFinal(g_data_final,g_mg_final,g_ph_final);
+    PlotFinal(g_mg_final, g_data_elec, g_data_muon, g_dummy_phistar, g_ratio_mg, g_ratio_elec, g_ratio_muon, 1);
+    textn = "Comb_Hist_";
+    textn += Tag;
+    if (doNorm) textn += "Norm_";
+    else textn += "Abs_";
+    textn += "MG_";
+    textn += "Dressed.root";
+    TFile tr_comb(textn.c_str());
+    TH1D* h_comb_temp = (TH1D*) tr_comb.Get("h_Comb");
+    TGraphAsymmErrors* g_comb_temp = ConvertToTGraph(h_comb_temp);
+    TGraphAsymmErrors* g_comb_final = CreateCopy(g_comb_temp);
+
+    PrintFinal(g_comb_final, g_data_elec, g_data_muon, 1);
 }
 

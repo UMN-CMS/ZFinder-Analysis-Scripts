@@ -23,7 +23,7 @@
 #include <iostream>
 #include <fstream>
 
-const bool doNorm=0;
+const bool doNorm=1;
 const bool doMG=0;
 const std::string Tag="";
 
@@ -31,11 +31,31 @@ const double phistarBins[] = {0.000,0.004,0.008,0.012,0.016,0.020,0.024,0.029,0.
 //const double phistarBins[] = {0.000,0.004,0.008,0.012,0.016,0.020,0.024,0.029,0.034,0.039,0.045,0.052,0.057,0.064,0.072,0.081,0.091,0.102,0.114,0.128,0.145,0.165,0.189,0.219,0.258,0.312,0.391,0.524,0.695,0.918};
 size_t nphistar=(sizeof(phistarBins)/sizeof(phistarBins[0]))-1;
 
-double ElectAbsTTBar[] = {0.001574, 0.001257, 0.001685, 0.001581, 0.001027, 0.001283, 0.001130, 0.001953, 0.001491, 0.002356, 0.002693, 0.002553, 0.002389, 0.002398, 0.004139, 0.003285, 0.002939, 0.005734, 0.005421, 0.005708, 0.008338, 0.009034, 0.010407, 0.015298, 0.019190, 0.030277, 0.042358, 0.079723, 0.128774, 0.169056, 0.201204, 0.190319, 0.186362, 0.190599, 0.181289, 0.181289};
-double ElectNormTTBar[] = {0.012417, 0.012734, 0.012307, 0.012411, 0.012965, 0.012709, 0.012861, 0.012038, 0.012501, 0.011636, 0.011299, 0.011439, 0.011602, 0.011593, 0.009853, 0.010707, 0.011053, 0.008257, 0.008570, 0.008283, 0.005652, 0.004957, 0.003583, 0.001308, 0.005201, 0.016289, 0.028372, 0.065743, 0.114800, 0.155088, 0.187240, 0.176354, 0.172396, 0.176633, 0.167323, 0.167323};
-double MuonAbsTTBar[] = {0.00151815, 0.00150637, 0.0015723, 0.00159348, 0.00170658, 0.00162156, 0.00183434, 0.00192313, 0.00208938, 0.00222283, 0.00240952, 0.00267002, 0.00289458, 0.00313999, 0.00345079, 0.00397061, 0.00456066, 0.00533871, 0.00616368, 0.0072238, 0.00836111, 0.010165, 0.0127692, 0.0164479, 0.0225485, 0.0335744, 0.055569, 0.098426, 0.155315, 0.209841, 0.236886, 0.23359, 0.217536, 0.211622, 0.226457};
-double MuonNormTTBar[] = {0.000273672, 0.000259274, 0.000273625, 0.00027254, 0.000298313, 0.000267256, 0.000314293, 0.00033616, 0.000356221, 0.000380016, 0.000428403, 0.000457978, 0.000502123, 0.000552694, 0.000597325, 0.000694674, 0.000796269, 0.000933197, 0.00106172, 0.00126091, 0.00145946, 0.00177974, 0.00222539, 0.00287601, 0.00393807, 0.00585608, 0.00968358, 0.0170782, 0.0268222, 0.0360863, 0.0406359, 0.0400708, 0.0373819, 0.0363764, 0.0388815};
+TH1D* GetHistMuon(std::string name, bool gen=0){
+  TH1D* h_Muon=new TH1D("h_Comb","h_Comb",nphistar,phistarBins);
+  h_Muon->Sumw2();
+  TFile fm(name.c_str());
+  TH1F *h_temp;
+  if (!gen) h_temp= (TH1F*)fm.Get("hRecoClone1");
+  else h_temp= (TH1F*)fm.Get("Gen_Dressed_phistar_NoPU");
+  for (uint i=0; i<nphistar; i++){
+    h_Muon->SetBinContent(i+1,h_temp->GetBinContent(i+1));
+    h_Muon->SetBinError(i+1,h_temp->GetBinError(i+1));
+  }
+  return h_Muon;
+} 
 
+TH1D* GetHistElec(std::string name, std::string histname){
+  TH1D* h_Elec=new TH1D("h_Elec","h_Elec",nphistar,phistarBins);
+  h_Elec->Sumw2();
+  TFile fm(name.c_str());
+  TH1D *h_temp = (TH1D*)fm.Get(histname.c_str());
+  for (uint i=0; i<nphistar; i++){
+    h_Elec->SetBinContent(i+1,h_temp->GetBinContent(i+1));
+    h_Elec->SetBinError(i+1,h_temp->GetBinError(i+1));
+  }
+  return h_Elec;
+} 
 
 TH1D* ConvertToHist(TGraphAsymmErrors* g){
   TH1D* h_temp;
@@ -51,99 +71,41 @@ TH1D* ConvertToHist(TGraphAsymmErrors* g){
   return h_temp;
 }
 
-TH1D* GetHistMuon(std::string name, bool TTErrorAdd=0){
-  TH1D* h_Muon=new TH1D("h_Comb","h_Comb",nphistar,phistarBins);
-  h_Muon->Sumw2();
-  TFile fm(name.c_str());
-  TH1F *h_temp;
-  //if (!gen) h_temp= (TH1F*)fm.Get("hRecoClone1");
-  //else h_temp= (TH1F*)fm.Get("Gen_Dressed_phistar_NoPU");//Fairly sure this won't be used ever again. should be broke if you try to now so...
-  h_temp= (TH1F*)fm.Get("hRecoClone1");
-  for (uint i=0; i<nphistar; i++){
-    h_Muon->SetBinContent(i + 1, h_temp->GetBinContent(i + 1));
-        //h_Muon->SetBinError(i+1,h_temp->GetBinError(i+1));
-        //Including TTBar error
-        double TTError = 0;
-        if(!TTErrorAdd){
-        if (doNorm) {
-            TTError = h_temp->GetBinContent(i + 1) * MuonNormTTBar[i] / 100;
-        } else {
-            TTError = h_temp->GetBinContent(i + 1) * MuonAbsTTBar[i] / 100;
-        }}
-
-        double OldError = h_temp->GetBinError(i + 1);
-        double NewError = sqrt(TTError * TTError + OldError * OldError);
-        h_Muon->SetBinError(i+1,NewError);
-  }
-  return h_Muon;
-} 
-
-TH1D* GetHistElec(std::string name, std::string histname, bool TTErrorAdd=0){
-  TH1D* h_Elec=new TH1D("h_Elec","h_Elec",nphistar,phistarBins);
-  h_Elec->Sumw2();
-  TFile fm(name.c_str());
-  TH1D *h_temp = (TH1D*)fm.Get(histname.c_str());
-  for (uint i=0; i<nphistar; i++){
-    double TTError = 0;
-        if (!TTErrorAdd) {//Adds the TTBar error stuff
-            if (doNorm) {
-                TTError = h_temp->GetBinContent(i + 1) * ElectNormTTBar[i] / 100;
-            } else {
-                TTError = h_temp->GetBinContent(i + 1) * ElectAbsTTBar[i] / 100;
-            }
-        }
-
-        double OldError = h_temp->GetBinError(i + 1);
-        double NewError = sqrt(TTError * TTError + OldError * OldError);
-        h_Elec->SetBinError(i + 1, NewError);
-  }
-  return h_Elec;
-} 
-
-
-
 void NTupleMakeComb(){
-  std::string muon_name="Muon_";
-  if (doNorm) muon_name+="Normalized_";
-  else        muon_name+="Absolute_";
-  muon_name+="Files_For_Combination_Unfold_Born_with_Powheg/Powheg_Born_";
+  std::string muon_name="Muon_CrossSection_For_Combination/Madgraph_Dressed_";
   if (doNorm) muon_name+="Normal_";
   else        muon_name+="Absolute_";
-
   std::string muon_lep=muon_name+"Central_UnCorrelated_Errors_No_BGND.root";
   std::string muon_bkg=muon_name+"Central_UnCorrelated_Errors_Only_BGND.root";
-  std::string muon_pup=muon_name+"UP.root";
-  std::string muon_pum=muon_name+"DOWN.root";
-  std::string muon_uns=muon_name+"Central_Unfold_Syst.root";
-  cout<<"test 1"<<endl;
-  cout<<"FIle name is "<<muon_lep<<endl;
-  TH1D* h_Muon_lep=GetHistMuon(muon_lep,1);
-  cout<<"test 2"<<endl;
+  // if (doNorm){
+  //  muon_lep=muon_name+"UnCorrelated_Errors_No_BGND.root";
+  //  muon_bkg=muon_name+"UnCorrelated_Errors_Only_BGND.root";
+  // }
+  std::string muon_pup=muon_name+"PU_UP.root";
+  std::string muon_pum=muon_name+"PU_DOWN.root";
+
+  TH1D* h_Muon_lep=GetHistMuon(muon_lep);
   TH1D* h_Muon_bkg=GetHistMuon(muon_bkg);
   TH1D* h_Muon_pup=GetHistMuon(muon_pup);
   TH1D* h_Muon_pum=GetHistMuon(muon_pum);
-  TH1D* h_Muon_uns=GetHistMuon(muon_uns);
-cout<<"test 3"<<endl;
+
   if (!doNorm){
     h_Muon_bkg->Scale(1./1000.);
     h_Muon_pup->Scale(1./1000.);
     h_Muon_pum->Scale(1./1000.);
     h_Muon_lep->Scale(1./1000.);
-    h_Muon_uns->Scale(1./1000.);
   }
   std::string elec_name="Final_Hist_";
   elec_name+=Tag;
   if (doNorm) elec_name+="Norm_";
   else        elec_name+="Abs_";
-  elec_name+="PH_";
-  elec_name+="Born.root";
+  elec_name+="MG_";
+  elec_name+="Dressed.root";
 
-  TH1D* h_Elec_lep=GetHistElec(elec_name,"h_data_elec",1);
+  TH1D* h_Elec_lep=GetHistElec(elec_name,"h_data_elec");
   TH1D* h_Elec_bkg=GetHistElec(elec_name,"h_data_bgnd");
-  TH1D* h_Elec_pdf=GetHistElec(elec_name,"h_data_pdf");
   TH1D* h_Elec_pup=GetHistElec(elec_name,"h_data_pup");
   TH1D* h_Elec_pum=GetHistElec(elec_name,"h_data_pum");
-  TH1D* h_Elec_uns=GetHistElec(elec_name,"h_data_uns");
 
   TH1D* h_Data_lep=(TH1D*)h_Muon_lep->Clone();
   TH1D* h_Data_pup=(TH1D*)h_Muon_pup->Clone();
@@ -152,17 +114,14 @@ cout<<"test 3"<<endl;
   h_Data_lep->Add(h_Elec_lep,1);
   h_Data_pup->Add(h_Elec_pup,1);
   h_Data_pum->Add(h_Elec_pum,1);
-cout<<"test 4"<<endl;
   for (uint i=0; i<nphistar; i++){
     double error_elec=h_Elec_lep->GetBinError(i+1)/h_Data_lep->GetBinContent(i+1);
     double error_muon=h_Muon_lep->GetBinError(i+1)/h_Data_lep->GetBinContent(i+1);
     double error_lep=sqrt(error_elec*error_elec+error_muon*error_muon);
     double error_bkg=(h_Elec_bkg->GetBinError(i+1)+h_Muon_bkg->GetBinError(i+1))/h_Data_lep->GetBinContent(i+1);
-    double error_pdf=h_Elec_pdf->GetBinError(i+1)/h_Data_lep->GetBinContent(i+1);
-    double error_uns=(h_Elec_uns->GetBinError(i+1)+h_Muon_uns->GetBinError(i+1))/h_Data_lep->GetBinContent(i+1);
     double error_lumi=0;
     if (!doNorm) error_lumi=0.026;
-    double error_tot=sqrt(error_lep*error_lep+error_bkg*error_bkg+error_lumi*error_lumi+error_pdf*error_pdf+error_uns*error_uns)*h_Data_lep->GetBinContent(i+1);
+    double error_tot=sqrt(error_lep*error_lep+error_bkg*error_bkg+error_lumi*error_lumi)*h_Data_lep->GetBinContent(i+1);
     h_Data_lep->SetBinError(i+1,error_tot);
   }
   h_Data_pup->Scale(0.5);
@@ -181,8 +140,8 @@ cout<<"test 4"<<endl;
   textn+=Tag;
   if (doNorm) textn+="Norm_";
   else        textn+="Abs_";
-  textn+="PH_";
-  textn+="BornTTbar.root";
+  textn+="MG_";
+  textn+="Dressed.root";
   TFile tr(textn.c_str(),"RECREATE");
   h_Data_lep->Write();
 }
@@ -242,15 +201,12 @@ void NTupleMakeCombMC(){
   else        textn+="Abs_";
   if (doMG)   textn+="MG_";
   else        textn+="PH_";
-  textn+="DressedTTBar.root";
+  textn+="Dressed.root";
   TFile tr(textn.c_str(),"RECREATE");
   h_MC->Write();
 }
 void MakeComp(){
-  std::string muon_name="Muon_";
-  if (doNorm) muon_name+="Normalized_";
-  else        muon_name+="Absolute_";
-  muon_name+="Files_For_Combination_Unfold_Born_with_Powheg/Powheg_Born_";
+  std::string muon_name="Muon_CrossSection_For_Combination/Madgraph_Dressed_";
   if (doNorm) muon_name+="Normal_";
   else        muon_name+="Absolute_";
   std::string muon_lep=muon_name+"Central_UnCorrelated_Errors_No_BGND.root";
@@ -266,8 +222,8 @@ void MakeComp(){
   elec_name+=Tag;
   if (doNorm) elec_name+="Norm_";
   else        elec_name+="Abs_";
-  elec_name+="PH_";
-  elec_name+="Born.root";
+  elec_name+="MG_";
+  elec_name+="Dressed.root";
   cout<<"Hi3"<<endl;
 
   TH1D* h_Elec_lep=GetHistElec(elec_name,"h_data_elec");
