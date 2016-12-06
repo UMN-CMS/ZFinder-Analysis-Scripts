@@ -35,6 +35,7 @@ size_t nphistar = (sizeof (phistarBins) / sizeof (phistarBins[0])) - 1;
 const double yBins[] = {0.0, 0.4, 0.8, 1.2, 1.6, 2.0, 2.4};
 size_t ny = (sizeof (yBins) / sizeof (yBins[0])) - 1;
 size_t nbins = nphistar*ny;
+using namespace std;
 
 void PrintValue(ofstream &outputfile, int n, int p, double value, double error) {
     if (p > 1 || p<-1) {
@@ -90,7 +91,7 @@ TGraphAsymmErrors* ResbosFromRaj(int FType = 0) {
     } else {
         if (FType == 0)FName = "Resbos_0_1000_8TeV_Absolute.root";
         else if (FType == 1)FName = "PhiStar_PowhegPythia8_phistar_Status3_Absolute.root";
-        else if (FType == 2) FName = "AMCAT_NLO_AODSIM_8TeV_Normalized.root";
+        else if (FType == 2) FName = "PhiStar_AMCAT_NLO_phistar_Status3_Absolute.root";
     }
     TFile ResFile(FName.c_str());
     TH1D* Bin0 = (TH1D*) ResFile.Get("PhiStar_YBin_0");
@@ -107,13 +108,21 @@ TGraphAsymmErrors* ResbosFromRaj(int FType = 0) {
     if (Bin4 == 0)cout << "missing Bin4" << endl;
     if (Bin5 == 0)cout << "missing Bin5" << endl;
 
-    if (!doNorm) {
+    if (!doNorm && FType != 2) {
         Bin0->Scale(1 / .4);
         Bin1->Scale(1 / .4);
         Bin2->Scale(1 / .4);
         Bin3->Scale(1 / .4);
         Bin4->Scale(1 / .4);
         Bin5->Scale(1 / .4);
+    }
+    if (FType == 2 && false) {
+        Bin0->Scale(1 / .9);
+        Bin1->Scale(1 / .9);
+        Bin2->Scale(1 / .9);
+        Bin3->Scale(1 / .9);
+        Bin4->Scale(1 / .9);
+        Bin5->Scale(1 / .9);
     }
 
     for (uint i = 1; i <= nphistar; i++) {
@@ -988,7 +997,7 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
     //if (i != 5)mark.DrawLatex(0.15, 0.15, "60 GeV < M_{ll} < 120 GeV");
     //else mark.DrawLatex(0.15, 0.30, "60 GeV < M_{ll} < 120 GeV");
 
-
+    FinalPhiRatio->cd(1);
     TLegend* leg2 = new TLegend(0.09, 0.888, 0.9, 0.94);
     leg2->SetNColumns(3);
     leg2->SetFillStyle(0);

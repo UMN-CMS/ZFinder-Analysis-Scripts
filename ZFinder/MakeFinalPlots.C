@@ -25,9 +25,10 @@
 
 #include <iostream>
 #include <fstream>
+#include <TAxis.h>
 
 const bool AlexPlots = false;
-const bool doNorm = 0;
+const bool doNorm = false;
 const bool debug = true;
 const int elec = 1;
 const int doMG = 0;
@@ -42,7 +43,6 @@ const double PHDataUnfoldUncertainty[] = {.0082, .0093, .0099, .0103, .0089, .00
 
 TGraphAsymmErrors* SplittGraph(bool Muons, bool RemoveLumi) {//Seperates the muon+Electron into 
     string FileName;
-    cout << "test 1" << endl;
     if (doNorm)FileName = "/home/user1/lesko/work/HomeWork/Phistar/CombineElectWithMu/EPlusMuFile/Comb_ForBlue_Norm_1D_Born.root";
     else FileName = "/home/user1/lesko/work/HomeWork/Phistar/CombineElectWithMu/EPlusMuFile/Comb_ForBlue_Abs_1D_Born.root";
     TFile AllStuff(FileName.c_str());
@@ -69,6 +69,88 @@ TGraphAsymmErrors* SplittGraph(bool Muons, bool RemoveLumi) {//Seperates the muo
     return Output;
 }
 
+TGraphAsymmErrors * ResbosFromRaj(int FType = 0) {//Only plotting Ratio soooo why not?
+    TGraphAsymmErrors* ResHolder = new TGraphAsymmErrors(nphistar);
+    string FName = "";
+    if (doNorm) {
+        if (FType == 0)FName = "D2/PhiStar_Resbos_phistar_Status3_Normalized.root";
+        if (FType == 1)FName = "D2/PhiStar_PowhegPythia8_NLO_phistar_Status3_Normalized.root";
+        if (FType == 2)FName = "D2/PhiStar_AMCAT_NLO_phistar_Status3_Normalized.root";
+    } else {
+        if (FType == 0)FName = "D2/PhiStar_Resbos_phistar_Status3_Absolute.root";
+        else if (FType == 1)FName = "D2/PhiStar_PowhegPythia8_NLO_phistar_Status3_Absolute.root";
+        else if (FType == 2) FName = "D2/PhiStar_AMCAT_NLO_phistar_Status3_Absolute.root";
+    }
+    TFile ResFile(FName.c_str());
+    TH1D* Bin0 = (TH1D*) ResFile.Get("PhiStar_YBin_0");
+    TH1D* Bin1 = (TH1D*) ResFile.Get("PhiStar_YBin_1");
+    TH1D* Bin2 = (TH1D*) ResFile.Get("PhiStar_YBin_2");
+    TH1D* Bin3 = (TH1D*) ResFile.Get("PhiStar_YBin_3");
+    TH1D* Bin4 = (TH1D*) ResFile.Get("PhiStar_YBin_4");
+    TH1D* Bin5 = (TH1D*) ResFile.Get("PhiStar_YBin_5");
+    //TH1D* Allstuff = (TH1D*) ResFile.Get("PhiStar")
+    if (Bin0 == 0)cout << "missing Bin0" << endl;
+    if (Bin1 == 0)cout << "missing Bin1" << endl;
+    if (Bin2 == 0)cout << "missing Bin2" << endl;
+    if (Bin3 == 0)cout << "missing Bin3" << endl;
+    if (Bin4 == 0)cout << "missing Bin4" << endl;
+    if (Bin5 == 0)cout << "missing Bin5" << endl;
+
+    if (!doNorm && FType != 2) {
+        Bin0->Scale(1 / .4);
+        Bin1->Scale(1 / .4);
+        Bin2->Scale(1 / .4);
+        Bin3->Scale(1 / .4);
+        Bin4->Scale(1 / .4);
+        Bin5->Scale(1 / .4);
+    }
+
+
+    TH1D* phiStarHist = (TH1D*) ResFile.Get("Phi_Star");
+    if(FType == 1)cout<<"Our errors are "<<phiStarHist->GetBinError(1)<<"  and bin value is "<<phiStarHist->GetBinContent(1)<<endl;;
+    if (doNorm && FType != 0&&false) {
+        for (uint i = 1; i <= nphistar; i++) {
+            phiStarHist->SetBinContent(i, phiStarHist->GetBinContent(i) / (phistarBins[i] - phistarBins[i - 1]));
+        }
+    }
+if(FType == 1)cout<<"Second Our errors are "<<phiStarHist->GetBinError(1)<<"  and bin value is "<<phiStarHist->GetBinContent(1)<<endl;;
+    //phiStarHist->Add(Bin1);
+    //phiStarHist->Add(Bin2);
+    //phiStarHist->Add(Bin3);
+    //phiStarHist->Add(Bin4);
+    //phiStarHist->Add(Bin5);
+
+    double Normilizer = 0;
+
+    if (false) {
+        for (uint i = 1; i <= nphistar; i++) {
+            Normilizer += phiStarHist->GetBinContent(i)*(phistarBins[i] - phistarBins[i - 1]);
+        }
+        phiStarHist->Scale(1 / Normilizer);
+    }
+    cout << "Test Bin 1 is " << phiStarHist->GetBinContent(1) << endl;
+    //TH1D* Allstuff = (TH1D*) ResFile.Get("PhiStar")
+    if (phiStarHist == 0)cout << "missing phiStarHist" << endl;
+
+
+
+    for (uint i = 1; i <= nphistar; i++) {
+        uint iphistar = i - 1;
+        ResHolder->SetPoint(iphistar, (phistarBins[iphistar] + phistarBins[iphistar + 1]) / 2, phiStarHist->GetBinContent(i));
+
+        ResHolder->SetPointEYhigh(iphistar, phiStarHist->GetBinError(i));
+
+        ResHolder->SetPointEYlow(iphistar, phiStarHist->GetBinError(i));
+
+        if (FType == 0) {
+            ResHolder->SetPointEYhigh(iphistar, .000001);
+
+            ResHolder->SetPointEYlow(iphistar, .000001);
+        }
+    }
+    return ResHolder;
+}
+
 TGraphAsymmErrors* ConvertToTGraph(TH1D* h) {
     TGraphAsymmErrors* g = new TGraphAsymmErrors(nphistar);
     for (size_t iphistar = 0; iphistar < nphistar; iphistar++) {
@@ -78,23 +160,18 @@ TGraphAsymmErrors* ConvertToTGraph(TH1D* h) {
     return g;
 }
 
-
 TGraphAsymmErrors* CreateRatio(TGraphAsymmErrors* graph, TGraphAsymmErrors* graphmc, bool isData) {
     double x, y, errorl, errorh, xmc, ymc, errorlmc, errorhmc;
     TGraphAsymmErrors* g_ratio = new TGraphAsymmErrors(nphistar);
 
     for (size_t iphistar = 0; iphistar < nphistar; iphistar++) {
-        if (AverageData)cout << " iphistar bin: " << iphistar << endl;
         graph->GetPoint(iphistar, x, y);
         errorl = graph->GetErrorYlow(iphistar);
         errorh = graph->GetErrorYhigh(iphistar);
-        if (AverageData)cout << "Create Ratio Test 1" << endl;
         if (!isData) {
             graphmc->GetPoint(iphistar, xmc, ymc);
-            if (AverageData)cout << "Create Ratio Test 2" << endl;
             errorlmc = graphmc->GetErrorYlow(iphistar);
             errorhmc = graphmc->GetErrorYhigh(iphistar);
-            if (AverageData)cout << "Create Ratio Test 3" << endl;
             g_ratio->SetPoint(iphistar, x, ymc / y);
             g_ratio->SetPointError(iphistar, 0, 0, errorlmc / y, errorhmc / y);
         } else {
@@ -110,7 +187,7 @@ TGraphAsymmErrors* CreateRatio(TGraphAsymmErrors* graph, TGraphAsymmErrors* grap
         g_ratio->GetXaxis()->SetTitleSize(0.12);
         g_ratio->GetXaxis()->SetLabelSize(0.12);
         g_ratio->GetYaxis()->SetTitle("MC/Data  ");
-        g_ratio->GetYaxis()->SetRangeUser(0.8, 1.2);
+        g_ratio->GetYaxis()->SetRangeUser(0.8, 1.12);
         g_ratio->GetYaxis()->SetTitleOffset(0.32);
         g_ratio->GetYaxis()->SetTitleSize(0.12);
         g_ratio->GetYaxis()->SetLabelSize(0.12);
@@ -217,13 +294,14 @@ void PrintFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, 
 }
 
 void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, TGraphAsymmErrors* g_ph_final, TGraphAsymmErrors* g_dummy_phistar, TGraphAsymmErrors* g_ratio_phistar, TGraphAsymmErrors* g_ratio_mg_phistar, TGraphAsymmErrors* g_ratio_ph_phistar, bool isPlot2 = 0) {
+
+    double WordSize = .075;
     TCanvas* FinalPhiTot = new TCanvas("FinalPhiTot", "FinalPhiTot", 800, 900);
-    cout << "TEST 1" << endl;
     FinalPhiTot->Divide(1, 2);
     FinalPhiTot->cd(1);
-    gPad->SetPad("p1", "p1", 0, 2.5 / 9.0, 1, 1, kWhite, 0, 0);
+    gPad->SetPad("p1", "p1", 0, .5, 1, 1, kWhite, 0, 0);
     gPad->SetBottomMargin(0.01);
-    gPad->SetTopMargin(0.06);
+    gPad->SetTopMargin(0.09);
     gPad->SetLeftMargin(0.15);
     gPad->SetRightMargin(0.06);
     gPad->SetLogx(1);
@@ -233,7 +311,6 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
     TGraphAsymmErrors* g_ph1_finalAlex;
     TGraphAsymmErrors* g_ratio_ph1_phistarAlex;
 
-    cout << "TEST 2" << endl;
 
     std::string textn = "Comb_Hist_";
     textn += Tag;
@@ -245,15 +322,99 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
     TH1D* h_data_temp = (TH1D*) tr.Get("h_Comb");
     TGraphAsymmErrors* AveragedCombined = ConvertToTGraph(h_data_temp);
     TGraphAsymmErrors* AveragedRatio = new TGraphAsymmErrors(nphistar);
-    cout << "TEST 5" << endl;
     AverageData = true;
     cout << " Error ? " << g_data_final->GetErrorYhigh(1);
     AveragedRatio = CreateRatio(g_data_final, AveragedCombined, 0);
-    cout << "TEST 6" << endl;
+
+
+
+    //make  Set Plot stuff
+    TGraphAsymmErrors* g_Resbos_phistar = ResbosFromRaj(0);
+    TGraphAsymmErrors*g_PowPyth8_phistar = ResbosFromRaj(1);
+    TGraphAsymmErrors*g_AMCatnlo_phistar = ResbosFromRaj(2);
+
+    TGraphAsymmErrors* g_ratio_Resbos_phistar = CreateRatio(g_data_final, ResbosFromRaj(0), 0);
+    TGraphAsymmErrors* g_ratio_PowPyth8_phistar = CreateRatio(g_data_final, ResbosFromRaj(1), 0);
+    TGraphAsymmErrors* g_ratio_AMCatnlo_phistar = CreateRatio(g_data_final, ResbosFromRaj(2), 0);
+
+
+    g_ratio_mg_phistar->SetMarkerSize(1);
+    g_ratio_mg_phistar->SetLineWidth(2);
+    g_ratio_mg_phistar->SetMarkerStyle(kFullTriangleUp);
+    g_ratio_mg_phistar->SetMarkerColor(kBlue - 7);
+    g_ratio_mg_phistar->SetLineColor(kBlue - 7);
+
+
+    g_ratio_ph_phistar->SetMarkerSize(1);
+    g_ratio_ph_phistar->SetLineWidth(2);
+    g_ratio_ph_phistar->SetMarkerStyle(kFullSquare);
+    g_ratio_ph_phistar->SetMarkerColor(kRed);
+    g_ratio_ph_phistar->SetLineColor(kRed);
+
+    g_ratio_PowPyth8_phistar->SetMarkerSize(1);
+    g_ratio_PowPyth8_phistar->SetLineWidth(2);
+    g_ratio_PowPyth8_phistar->SetMarkerStyle(kOpenSquare);
+    g_ratio_PowPyth8_phistar->SetMarkerColor(kRed);
+    g_ratio_PowPyth8_phistar->SetLineColor(kRed);
+
+    g_ratio_Resbos_phistar->SetMarkerColor(kGreen + 1);
+    g_ratio_Resbos_phistar->SetLineColor(kGreen + 1);
+    g_ratio_Resbos_phistar->SetMarkerSize(1);
+    g_ratio_Resbos_phistar->SetLineWidth(2);
+    g_ratio_Resbos_phistar->SetMarkerStyle(kStar);
+
+
+    g_ratio_AMCatnlo_phistar->SetMarkerSize(1);
+    g_ratio_AMCatnlo_phistar->SetLineWidth(2);
+    g_ratio_AMCatnlo_phistar->SetMarkerStyle(kOpenCircle);
+    g_ratio_AMCatnlo_phistar->SetMarkerColor(kCyan + 2);
+    g_ratio_AMCatnlo_phistar->SetLineColor(kCyan + 2);
+
+
+
+    g_mg_final->SetMarkerSize(1);
+    g_mg_final->SetLineWidth(2);
+    g_mg_final->SetMarkerStyle(kFullTriangleUp);
+    g_mg_final->SetMarkerColor(kBlue - 7);
+    g_mg_final->SetLineColor(kBlue - 7);
+
+
+    g_ph_final->SetMarkerSize(1);
+    g_ph_final->SetLineWidth(2);
+    g_ph_final->SetMarkerStyle(kFullSquare);
+    g_ph_final->SetMarkerColor(kRed);
+    g_ph_final->SetLineColor(kRed);
+
+    g_data_final->SetMarkerSize(1);
+    g_data_final->SetLineWidth(2);
+    g_data_final->SetMarkerStyle(kFullCircle);
+    g_data_final->SetMarkerColor(kBlack);
+    g_data_final->SetLineColor(kBlack);
+
+    g_PowPyth8_phistar->SetMarkerSize(1);
+    g_PowPyth8_phistar->SetLineWidth(2);
+    g_PowPyth8_phistar->SetMarkerStyle(kOpenSquare);
+    g_PowPyth8_phistar->SetMarkerColor(kRed);
+    g_PowPyth8_phistar->SetLineColor(kRed);
+
+    g_Resbos_phistar->SetMarkerColor(kGreen + 1);
+    g_Resbos_phistar->SetLineColor(kGreen + 1);
+    g_Resbos_phistar->SetMarkerSize(1);
+    g_Resbos_phistar->SetLineWidth(2);
+    g_Resbos_phistar->SetMarkerStyle(kStar);
+
+
+    g_AMCatnlo_phistar->SetMarkerSize(1);
+    g_AMCatnlo_phistar->SetLineWidth(2);
+    g_AMCatnlo_phistar->SetMarkerStyle(kOpenCircle);
+    g_AMCatnlo_phistar->SetMarkerColor(kCyan + 2);
+    g_AMCatnlo_phistar->SetLineColor(kCyan + 2);
+
+    //End
+
+
     if (AlexPlots && doNorm) {
-        if (debug) {
-            cout << "test 1" << endl;
-        }
+        
         g_ph2_finalAlex = new TGraphAsymmErrors(nphistar);
         g_ratio_ph2_phistarAlex = new TGraphAsymmErrors(nphistar);
         g_ph1_finalAlex = new TGraphAsymmErrors(nphistar);
@@ -267,23 +428,22 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
     g_dummy_phistar->GetXaxis()->SetRangeUser(0.001, 3.0);
     if (doNorm) g_dummy_phistar->GetYaxis()->SetRangeUser(0.0012, 100.0);
     else g_dummy_phistar->GetYaxis()->SetRangeUser(0.8, 40000.0);
+    g_dummy_phistar->GetXaxis()->CenterTitle();
+    g_dummy_phistar->GetXaxis()->SetTitleOffset(.8);
+    g_dummy_phistar->GetYaxis()->CenterTitle();
+    g_dummy_phistar->GetYaxis()->SetTitleSize(1.2*WordSize);
+    g_dummy_phistar->GetYaxis()->SetLabelSize(WordSize);
+    g_dummy_phistar->GetYaxis()->SetTitleOffset(0.7);
     g_dummy_phistar->Draw("A2");
     int Color1 = kBlue;
     int Color2 = kRed;
     int Color3 = kGreen + 2;
     int Color4 = kOrange + 7;
-    g_mg_final->SetMarkerColor(Color1);
-    g_mg_final->SetLineColor(Color1);
-    g_mg_final->SetMarkerSize(1);
-    g_mg_final->SetLineWidth(2);
-    g_mg_final->SetMarkerStyle(4);
     g_mg_final->Draw("PEsame");
-    g_ph_final->SetMarkerColor(Color2);
-    g_ph_final->SetLineColor(Color2);
-    g_ph_final->SetMarkerSize(1);
-    g_ph_final->SetLineWidth(2);
-    g_ph_final->SetMarkerStyle(20);
     g_ph_final->Draw("PEsame");
+    g_AMCatnlo_phistar->Draw("PESame");
+    g_Resbos_phistar->Draw("PESame");
+    g_PowPyth8_phistar->Draw("PESame");
     if (AlexPlots && doNorm) {
         if (debug) {
             cout << "test 2" << endl;
@@ -341,116 +501,103 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
 
         }
         VAndU.close();
-
-
     }
-    int ColorError = kGray + 1;
-    g_data_final->SetFillColor(ColorError);
-    g_data_final->SetMarkerSize(1);
-    g_data_final->SetLineWidth(2);
-    g_data_final->SetMarkerStyle(20);
+    int ColorError = kYellow;
     g_data_final->Draw("PEsame");
     g_data_final->SetFillColor(ColorError);
 
-    TLegend* leg = new TLegend(0.23, 0.76, 0.95, 0.94);
+    double legendOffset = -.4;
+    TLegend* leg = new TLegend(0.16, 0.45 + legendOffset, 0.4, 0.88 + legendOffset);
     leg->SetFillStyle(0);
     leg->SetBorderSize(0);
     leg->SetLineWidth(1);
     leg->SetNColumns(1);
     leg->SetTextFont(42);
+    leg->SetTextSize(WordSize);
 
     if (!isPlot2) {
-        leg->AddEntry(g_data_final, "2012 data", "PEF");
+        leg->AddEntry(g_data_final, "Combined Data", "P");
         if (Type == "elec") {
-            leg->AddEntry(g_mg_final, "Z #rightarrow ee MadGraph+Pythia6 (Z2star)", "P");
-            leg->AddEntry(g_ph_final, "Z #rightarrow ee POWHEG+Pythia6 (Z2star)", "P");
+            //leg->AddEntry(g_mg_final, "Z #rightarrow ee MadGraph+PYTHIA6 (Z2*)", "P");
+            leg->AddEntry(g_ph_final, "Z #rightarrow ee POWHEG+PYTHIA6 (Z2*)", "P");
             if (AlexPlots && doNorm) {
-                leg->AddEntry(g_ph2_finalAlex, "Z #rightarrow ee POWHEG+Pythia8 (Tunepp 5)", "P");
-                leg->AddEntry(g_ph1_finalAlex, "Z #rightarrow ee POWHEG+Pythia8 (Tunepp 14)", "P");
+                leg->AddEntry(g_ph2_finalAlex, "Z #rightarrow ee POWHEG+PYTHIA8 (Tunepp 5)", "P");
+                leg->AddEntry(g_ph1_finalAlex, "Z #rightarrow ee POWHEG+PYTHIA8 (Tunepp 14)", "P");
             }
         }
         if (Type == "muon") {
-            leg->AddEntry(g_mg_final, "Z #rightarrow #mu#mu MadGraph", "P");
+            //leg->AddEntry(g_mg_final, "Z #rightarrow #mu#mu MadGraph", "P");
             leg->AddEntry(g_ph_final, "Z #rightarrow #mu#mu Powheg", "P");
         }
         if (Type == "combined") {
-            leg->AddEntry(g_mg_final, "Z #rightarrow ll MadGraph", "P");
-            leg->AddEntry(g_ph_final, "Z #rightarrow ll Powheg", "P");
+            leg->AddEntry(g_ratio_mg_phistar, "MadGraph+PYTHIA6 (Z2*)", "P");
+            leg->AddEntry(g_ratio_ph_phistar, "POWHEG+PYTHIA6 (Z2*)", "P");
+            leg->AddEntry(g_ratio_PowPyth8_phistar, "POWHEG+PYTHIA8 (CT10)", "P");
+            leg->AddEntry(g_ratio_Resbos_phistar, "ResBos", "P");
+            leg->AddEntry(g_ratio_AMCatnlo_phistar, "aMC@NLO+PYTHIA8(CUETP8M1)", "P");
         }
     } else {
-        leg->AddEntry(g_mg_final, "2012 data: Z #rightarrow ee", "P");
-        leg->AddEntry(g_ph_final, "2012 data: Z #rightarrow #mu#mu", "P");
+        //leg->AddEntry(g_mg_final, "data: Z #rightarrow ee", "P");
+        leg->AddEntry(g_ph_final, "Data: Z #rightarrow #mu#mu", "P");
         leg->AddEntry(g_data_final, "Blue Combined: Z #rightarrow ll", "PEF");
     }
     leg->Draw();
 
     TLatex mark;
     // mark.SetTextSize(0.05);
-    mark.SetTextSize(0.035);
+    mark.SetTextSize(WordSize);
     mark.SetNDC(true);
-    mark.DrawLatex(0.745, 0.95, "19.7 fb^{-1} (8 TeV)");
-    mark.DrawLatex(0.19, 0.955, "CMS Preliminary");
+    mark.DrawLatex(0.66, 0.93, "19.7 fb^{-1} (8 TeV)");
+    mark.DrawLatex(0.15, 0.93, "CMS");
     if (Type == "elec" && !isPlot2) {
-        mark.DrawLatex(0.19, 0.20, "|#eta^{e_{0}}| < 2.1,        |#eta^{e_{1}}| < 2.4");
-        mark.DrawLatex(0.19, 0.13, "p_{T}^{e_{0}} > 30 GeV,   p_{T}^{e_{1}} > 20 GeV");
-        mark.DrawLatex(0.19, 0.06, "60 GeV < M_{ee} < 120 GeV");
+        mark.DrawLatex(0.19, 0.24, "|#eta^{e_{0}}| < 2.1,        |#eta^{e_{1}}| < 2.4");
+        mark.DrawLatex(0.19, 0.19, "p_{T}^{e_{0}} > 30 GeV,   p_{T}^{e_{1}} > 20 GeV");
+        mark.DrawLatex(0.19, 0.14, "60 GeV < M_{ee} < 120 GeV");
     }
     if (Type == "muon" && !isPlot2) {
-        mark.DrawLatex(0.19, 0.20, "|#eta^{#mu_{0}}| < 2.1,        |#eta^{#mu_{1}}| < 2.4");
-        mark.DrawLatex(0.19, 0.13, "p_{T}^{#mu_{0}} > 30 GeV,   p_{T}^{#mu_{1}} > 20 GeV");
-        mark.DrawLatex(0.19, 0.06, "60 GeV < M_{#mu#mu} < 120 GeV");
+        mark.DrawLatex(0.19, 0.28, "|#eta^{#mu_{0}}| < 2.1,        |#eta^{#mu_{1}}| < 2.4");
+        mark.DrawLatex(0.19, 0.22, "p_{T}^{#mu_{0}} > 30 GeV,   p_{T}^{#mu_{1}} > 20 GeV");
+        mark.DrawLatex(0.19, 0.14, "60 GeV < M_{#mu#mu} < 120 GeV");
     }
-    if (Type == "combined" || isPlot2) {
-        mark.DrawLatex(0.19, 0.20, "|#eta^{l_{0}}| < 2.1,        |#eta^{l_{1}}| < 2.4");
-        mark.DrawLatex(0.19, 0.13, "p_{T}^{l_{0}} > 30 GeV,   p_{T}^{l_{1}} > 20 GeV");
-        mark.DrawLatex(0.19, 0.06, "60 GeV < M_{ll} < 120 GeV");
-    }
-    FinalPhiTot->cd(2);
-    gPad->SetPad("p2", "p2", 0, 0, 1, 2.5 / 9.0, kWhite, 0, 0);
-    gPad->SetBottomMargin(0.37);
-    gPad->SetTopMargin(0.01);
-    gPad->SetLeftMargin(0.15);
-    gPad->SetRightMargin(0.06);
-    gPad->SetLogx(1);
+    //if (Type == "combined" || isPlot2) {
+    //    double Yoffset = .6;
+    //    mark.DrawLatex(0.58, 0.28 + Yoffset, "|#eta^{l_{0}}| < 2.1,        |#eta^{l_{1}}| < 2.4");
+    //    mark.DrawLatex(0.58, 0.2 + Yoffset, "p_{T}^{l_{0}} > 30 GeV,   p_{T}^{l_{1}} > 20 GeV");
+    //    mark.DrawLatex(0.58, 0.12 + Yoffset, "60 GeV < M_{ll} < 120 GeV");
+    //}
+    if (true) {
+        FinalPhiTot->cd(2);
+        gPad->SetPad("p2", "p2", 0, 0, 1, .5, kWhite, 0, 0);
+        gPad->SetBottomMargin(0.2);
+        gPad->SetTopMargin(0.01);
+        gPad->SetLeftMargin(0.15);
+        gPad->SetRightMargin(0.06);
+        gPad->SetLogx(1);
 
-    if (isPlot2) g_ratio_phistar->GetYaxis()->SetTitle("Data/MC  ");
-    else g_ratio_phistar->GetYaxis()->SetTitle("MC/Data   ");
-    g_ratio_phistar->GetXaxis()->SetRangeUser(0.001, 3.0);
-    g_ratio_phistar->GetYaxis()->SetRangeUser(0.76, 1.24);
-    if (isPlot2) g_ratio_phistar->GetYaxis()->SetRangeUser(0.88, 1.12);
-    if (isPlot2 && (!doNorm)) g_ratio_phistar->GetYaxis()->SetRangeUser(0.93, 1.07);
-    g_ratio_phistar->GetYaxis()->SetTitleOffset(0.45);
-    g_ratio_phistar->SetFillColor(ColorError);
-    g_ratio_phistar->Draw("AE2leg->AddEn");
-    g_ratio_mg_phistar->SetMarkerSize(1);
-    g_ratio_mg_phistar->SetLineWidth(2);
-    g_ratio_mg_phistar->SetMarkerStyle(4);
-    g_ratio_mg_phistar->SetMarkerColor(Color1);
-    g_ratio_mg_phistar->SetLineColor(Color1);
-    g_ratio_mg_phistar->Draw("PEsame");
-    g_ratio_ph_phistar->SetMarkerSize(1);
-    g_ratio_ph_phistar->SetLineWidth(2);
-    g_ratio_ph_phistar->SetMarkerStyle(20);
-    g_ratio_ph_phistar->SetMarkerColor(Color2);
-    g_ratio_ph_phistar->SetLineColor(Color2);
-    g_ratio_ph_phistar->Draw("PEsame");
-    TLine Test(0, 1, 3.12, 1);
-    Test.Draw();
-    if (AlexPlots && doNorm) {
-        g_ratio_ph2_phistarAlex->SetMarkerColor(Color3);
-        g_ratio_ph2_phistarAlex->SetLineColor(Color3);
-        g_ratio_ph2_phistarAlex->SetMarkerSize(1);
-        g_ratio_ph2_phistarAlex->SetLineWidth(2);
-        g_ratio_ph2_phistarAlex->SetMarkerStyle(21);
-        g_ratio_ph2_phistarAlex->Draw("PEsame");
-
-
-        g_ratio_ph1_phistarAlex->SetMarkerColor(Color4);
-        g_ratio_ph1_phistarAlex->SetLineColor(Color4);
-        g_ratio_ph1_phistarAlex->SetMarkerSize(1);
-        g_ratio_ph1_phistarAlex->SetLineWidth(2);
-        g_ratio_ph1_phistarAlex->SetMarkerStyle(22);
-        g_ratio_ph1_phistarAlex->Draw("PEsame");
+        if (isPlot2) g_ratio_phistar->GetYaxis()->SetTitle("Data/MC");
+        else g_ratio_phistar->GetYaxis()->SetTitle("Theory/Data");
+        g_ratio_phistar->GetYaxis()->CenterTitle();
+        g_ratio_phistar->GetXaxis()->SetRangeUser(0.001, 3.0);
+        g_ratio_phistar->GetYaxis()->SetRangeUser(0.76, 1.24);
+        if (isPlot2) g_ratio_phistar->GetYaxis()->SetRangeUser(0.88, 1.12);
+        if (isPlot2 && (!doNorm)) g_ratio_phistar->GetYaxis()->SetRangeUser(0.93, 1.07);
+        g_ratio_phistar->GetYaxis()->SetTitleOffset(.7);
+        g_ratio_phistar->SetFillColor(ColorError);
+        g_ratio_phistar->GetYaxis()->SetRangeUser(.78, 1.22);
+        g_ratio_phistar->GetXaxis()->CenterTitle();
+        g_ratio_phistar->GetXaxis()->SetTitleOffset(.65);
+        g_ratio_phistar->GetXaxis()->SetTitleSize(1.2*WordSize); 
+        g_ratio_phistar->GetYaxis()->SetTitleSize(1.2*WordSize);
+        g_ratio_phistar->GetXaxis()->SetLabelSize(WordSize);
+        g_ratio_phistar->GetYaxis()->SetLabelSize(WordSize);
+        g_ratio_phistar->Draw("AE2");
+        g_ratio_mg_phistar->Draw("PEsame");
+        g_ratio_ph_phistar->Draw("PEsame");
+        g_ratio_PowPyth8_phistar->Draw("PEsame");
+        g_ratio_Resbos_phistar->Draw("PEsame");
+        g_ratio_AMCatnlo_phistar->Draw("PEsame");
+        TLine Test(0, 1, 3.12, 1);
+        Test.Draw();
     }
     std::string plotname = "ZShape_";
     plotname += Tag;
@@ -466,31 +613,57 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
     FinalPhiTot->SaveAs((plotname + "pdf").c_str());
     FinalPhiTot->SaveAs((plotname + "png").c_str());
     FinalPhiTot->SaveAs((plotname + "C").c_str());
+    
+    if(doNorm)FinalPhiTot->SaveAs("/home/user1/lesko/work/Phistar/papers/SMP-15-002/trunk/NormAll.pdf");
+    else FinalPhiTot->SaveAs("/home/user1/lesko/work/Phistar/papers/SMP-15-002/trunk/AbsAll.pdf");
 
+    return;
     TCanvas* FinalPhiRatio = new TCanvas("FinalPhiRatio", "FinalPhiRatio", 800, 900);
     FinalPhiRatio->cd();
+    FinalPhiRatio->SetRightMargin(.01);
     FinalPhiRatio->SetLogx();
-    if (isPlot2) g_ratio_phistar->GetYaxis()->SetTitle("Data/MC");
+    if (isPlot2) g_ratio_phistar->GetYaxis()->SetTitle("MC/Data");
     else g_ratio_phistar->GetYaxis()->SetTitle("MC/Data");
+    g_ratio_phistar->SetFillColor(kYellow);
+    g_ratio_phistar->GetYaxis()->CenterTitle();
+    g_ratio_phistar->GetXaxis()->CenterTitle();
     g_ratio_phistar->SetFillColor(ColorError);
     g_ratio_phistar->GetYaxis()->SetRangeUser(0.7, 1.3);
+
     g_ratio_phistar->GetYaxis()->SetTitleOffset(1.2);
     g_ratio_phistar->GetYaxis()->SetTitleSize(0.04);
     g_ratio_phistar->GetYaxis()->SetLabelSize(0.04);
-    g_ratio_phistar->GetXaxis()->SetTitleSize(0.04);
+    g_ratio_phistar->GetXaxis()->SetTitleOffset(.65);
+    g_ratio_phistar->GetXaxis()->SetTitleSize(0.05);
     g_ratio_phistar->GetXaxis()->SetLabelSize(0.04);
+    g_ratio_phistar->GetYaxis()->SetLabelSize(0.04);
     g_ratio_phistar->GetXaxis()->SetLabelOffset(-0.01);
+    g_ratio_phistar->GetYaxis()->SetNdivisions(510);
     g_ratio_phistar->Draw("AE2");
 
+
+    g_ratio_mg_phistar->SetMarkerSize(1);
+    g_ratio_mg_phistar->SetLineWidth(2);
+    g_ratio_mg_phistar->SetMarkerStyle(kOpenTriangleUp);
+    g_ratio_mg_phistar->SetMarkerColor(kBlue - 7);
+    g_ratio_mg_phistar->SetLineColor(kBlue - 7);
     g_ratio_mg_phistar->Draw("PEsame");
+
+
+
     g_ratio_ph_phistar->Draw("PEsame");
+
+
+    g_ratio_PowPyth8_phistar->Draw("PEsame");
+    g_ratio_Resbos_phistar->Draw("PEsame");
+    g_ratio_AMCatnlo_phistar->Draw("PEsame");
     if (AlexPlots && doNorm) {
         g_ratio_ph2_phistarAlex->Draw("PEsame");
         g_ratio_ph1_phistarAlex->Draw("PEsame");
     }
-    mark.SetTextSize(0.03);
-    mark.DrawLatex(0.7, 0.907, "19.7 fb^{-1} (8 TeV)");
-    mark.DrawLatex(0.19, 0.87, "CMS Preliminary");
+    mark.SetTextSize(0.04);
+    mark.DrawLatex(0.71, 0.907, "19.7 fb^{-1} (8 TeV)");
+    mark.DrawLatex(0.101, 0.907, "CMS");
     if (Type == "elec" && !isPlot2) {
         mark.DrawLatex(0.15, 0.25, "|#eta^{e_{0}}| < 2.1,        |#eta^{e_{1}}| < 2.4");
         mark.DrawLatex(0.15, 0.20, "p_{T}^{e_{0}} > 30 GeV,   p_{T}^{e_{1}} > 20 GeV");
@@ -503,32 +676,36 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
     }
     if (Type == "combined" || isPlot2) {
         mark.DrawLatex(0.15, 0.25, "|#eta^{l_{0}}| < 2.1,        |#eta^{l_{1}}| < 2.4");
-        mark.DrawLatex(0.15, 0.20, "p_{T}^{l_{0}} > 30 GeV,   p_{T}^{l_{1}} > 20 GeV");
+        mark.DrawLatex(0.15, 0.2, "p_{T}^{l_{0}} > 30 GeV,   p_{T}^{l_{1}} > 20 GeV");
         mark.DrawLatex(0.15, 0.15, "60 GeV < M_{ll} < 120 GeV");
 
-        AveragedRatio->SetMarkerSize(1);
-        AveragedRatio->SetLineWidth(2);
-        AveragedRatio->SetMarkerStyle(kOpenCircle);
-        AveragedRatio->SetMarkerColor(kCyan + 2);
-        AveragedRatio->SetLineColor(kCyan + 2);
-        AveragedRatio->Draw("PEsame");
+        //AveragedRatio->SetMarkerSize(1);
+        //AveragedRatio->SetLineWidth(2);
+        //AveragedRatio->SetMarkerStyle(kOpenCircle);
+        //AveragedRatio->SetMarkerColor(kCyan + 2);
+        //AveragedRatio->SetLineColor(kCyan + 2);
+        //AveragedRatio->Draw("PEsame");
 
     }
-    TLegend* leg2 = new TLegend(0.13, 0.62, 0.95, 0.84);
+    TLegend* leg2 = new TLegend(0.1, 0.66, 0.65, 0.9);
     leg2->SetFillStyle(0);
     leg2->SetBorderSize(0);
     leg2->SetLineWidth(1);
     leg2->SetNColumns(1);
     leg2->SetTextFont(42);
-
+    leg2->SetTextSize(.04);
     if (!isPlot2) {
-        leg2->AddEntry(g_ratio_phistar, "2012 data", "PEF");
+        //g_ratio_phistar->SetMarkerColor(kYellow);
+        //leg2->AddEntry(g_ratio_phistar, "Data", "EF");
         if (Type == "elec") {
-            leg2->AddEntry(g_mg_final, "Z #rightarrow ee MadGraph+Pythia6 (Z2star)", "P");
-            leg2->AddEntry(g_ph_final, "Z #rightarrow ee POWHEG+Pythia6 (Z2star)", "P");
+            leg2->AddEntry(g_ratio_mg_phistar, "MadGraph+PYTHIA6 (Z2*)", "P");
+            leg2->AddEntry(g_ratio_ph_phistar, "POWHEG+PYTHIA6 (Z2*)", "P");
+            leg2->AddEntry(g_ratio_PowPyth8_phistar, "POWHEG+PYTHIA8 (CT10)", "P");
+            leg2->AddEntry(g_ratio_Resbos_phistar, "Resbos", "P");
+            leg2->AddEntry(g_ratio_AMCatnlo_phistar, "aMC@NLO+PYTHIA8(CUETP8M1)", "P");
             if (AlexPlots && doNorm) {
-                leg2->AddEntry(g_ratio_ph2_phistarAlex, "Z #rightarrow ee POWHEG+Pythia8  (Tunepp 5)", "P");
-                leg2->AddEntry(g_ratio_ph1_phistarAlex, "Z #rightarrow ee POWHEG+Pythia8 (Tunepp 14)", "P");
+                leg2->AddEntry(g_ratio_ph2_phistarAlex, "POWHEG+PYTHIA8  (Tunepp 5)", "P");
+                leg2->AddEntry(g_ratio_ph1_phistarAlex, "POWHEG+PYTHIA8 (Tunepp 14)", "P");
             }
         }
         if (Type == "muon") {
@@ -536,13 +713,17 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
             leg2->AddEntry(g_ph_final, "Z #rightarrow #mu#mu Powheg", "P");
         }
         if (Type == "combined") {
-            leg2->AddEntry(g_mg_final, "Z #rightarrow ll MadGraph", "P");
-            leg2->AddEntry(g_ph_final, "Z #rightarrow ll Powheg", "P");
-            leg2->AddEntry(AveragedRatio, "Z #rightarrow ll Averaged Combined", "P");
+            leg2->AddEntry(g_ratio_mg_phistar, "MadGraph+PYTHIA6 (Z2*)", "P");
+            leg2->AddEntry(g_ratio_ph_phistar, "POWHEG+PYTHIA6 (Z2*)", "P");
+            leg2->AddEntry(g_ratio_PowPyth8_phistar, "POWHEG+PYTHIA8 (CT10)", "P");
+            leg2->AddEntry(g_ratio_Resbos_phistar, "Resbos", "P");
+            leg2->AddEntry(g_ratio_AMCatnlo_phistar, "aMC@NLO+PYTHIA8(CUETP8M1)", "P");
+
+            //leg2->AddEntry(AveragedRatio, "Z #rightarrow ll Averaged Combined", "P");
         }
     } else {
-        leg2->AddEntry(g_mg_final, "2012 data: Z #rightarrow ee", "P");
-        leg2->AddEntry(g_ph_final, "2012 data: Z #rightarrow #mu#mu", "P");
+        leg2->AddEntry(g_mg_final, "Data: Z #rightarrow ee", "P");
+        leg2->AddEntry(g_ph_final, "Data: Z #rightarrow #mu#mu", "P");
         leg2->AddEntry(g_data_final, "Blue Combined: Z #rightarrow ll", "PEF");
     }
     leg2->Draw();
@@ -583,7 +764,7 @@ TGraphAsymmErrors* CreateDummy(TGraphAsymmErrors* graph) {
     }
     g_dummy->GetXaxis()->SetRangeUser(0.001, 3.2);
     g_dummy->GetXaxis()->SetTitleOffset(1.05);
-    g_dummy->GetXaxis()->SetTitle(0);
+    g_dummy->GetXaxis()->SetTitle("#phi*");
     g_dummy->GetXaxis()->SetTitleSize(0.05);
     g_dummy->GetXaxis()->SetLabelSize(0.05);
     g_dummy->GetYaxis()->SetTitleOffset(1.05);
@@ -784,8 +965,8 @@ void MakeFinalPlots2(bool RemoveLumiUncertainty = 0) {
         }
     }
     cout << "going to make ratio plots" << endl;
-    if (doNorm)textn = "~/work/HomeWork/Phistar/CombineElectWithMu/Comb_Norm_UsingBlue.root";
-    else textn = "~/work/HomeWork/Phistar/CombineElectWithMu/Comb_Abs_UsingBlue.root";
+    if (doNorm)textn = "~/work/HomeWork/Phistar/CombineElectWithMu/Comb_Norm_UsingBlue1D.root";
+    else textn = "~/work/HomeWork/Phistar/CombineElectWithMu/Comb_Abs_UsingBlue1D.root";
     TFile tr_comb(textn.c_str());
     TGraphAsymmErrors* g_comb_temp = (TGraphAsymmErrors*) tr_comb.Get("h_Comb");
     TGraphAsymmErrors* g_comb_final = CreateCopy(g_comb_temp);
@@ -809,7 +990,5 @@ void MakeFinalPlots2(bool RemoveLumiUncertainty = 0) {
         g_comb_final->GetPoint(phibinN, xc, yc);
         cout << "AND FOR OUR RATIO IN BIN " << phibinN << " we have " << ye / yc << endl;
     }
-
     PrintFinal(g_comb_final, g_data_elec, g_data_muon, 1);
 }
-
