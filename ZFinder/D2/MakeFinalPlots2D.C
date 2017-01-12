@@ -182,12 +182,29 @@ TGraphAsymmErrors* ResbosFromRaj(int FType = 0) {
         else if (FType == 2) FName = "PhiStar_AMCAT_NLO_phistar_Status3_Absolute.root";
     }
     TFile ResFile(FName.c_str());
-    TH1D* Bin0 = (TH1D*) ResFile.Get("PhiStar_YBin_0");
-    TH1D* Bin1 = (TH1D*) ResFile.Get("PhiStar_YBin_1");
-    TH1D* Bin2 = (TH1D*) ResFile.Get("PhiStar_YBin_2");
-    TH1D* Bin3 = (TH1D*) ResFile.Get("PhiStar_YBin_3");
-    TH1D* Bin4 = (TH1D*) ResFile.Get("PhiStar_YBin_4");
-    TH1D* Bin5 = (TH1D*) ResFile.Get("PhiStar_YBin_5");
+
+
+    TH1D* Bin0;
+    TH1D* Bin1;
+    TH1D* Bin2;
+    TH1D* Bin3;
+    TH1D* Bin4;
+    TH1D* Bin5;
+    if (FType != 2) {
+        Bin0 = (TH1D*) ResFile.Get("PhiStar_YBin_0");
+        Bin1 = (TH1D*) ResFile.Get("PhiStar_YBin_1");
+        Bin2 = (TH1D*) ResFile.Get("PhiStar_YBin_2");
+        Bin3 = (TH1D*) ResFile.Get("PhiStar_YBin_3");
+        Bin4 = (TH1D*) ResFile.Get("PhiStar_YBin_4");
+        Bin5 = (TH1D*) ResFile.Get("PhiStar_YBin_5");
+    } else {
+        Bin0 = (TH1D*) ResFile.Get("PhiStar_YBin_0_PDF0");
+        Bin1 = (TH1D*) ResFile.Get("PhiStar_YBin_1_PDF0");
+        Bin2 = (TH1D*) ResFile.Get("PhiStar_YBin_2_PDF0");
+        Bin3 = (TH1D*) ResFile.Get("PhiStar_YBin_3_PDF0");
+        Bin4 = (TH1D*) ResFile.Get("PhiStar_YBin_4_PDF0");
+        Bin5 = (TH1D*) ResFile.Get("PhiStar_YBin_5_PDF0");
+    }
     //TH1D* Allstuff = (TH1D*) ResFile.Get("PhiStar")
     if (Bin0 == 0)cout << "missing Bin0" << endl;
     if (Bin1 == 0)cout << "missing Bin1" << endl;
@@ -244,184 +261,191 @@ TGraphAsymmErrors* ResbosFromRaj(int FType = 0) {
 }
 
 void PrintFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, TGraphAsymmErrors* g_ph_final, bool dataonly = 0, TGraphAsymmErrors* g_re_final = 0) {
-    ofstream outputfile;
-    std::string textname = "Output/Table_2D_Values_";
-    textname += Tag;
-    if (!dataonly) {
-        textname += Type;
-        textname += "_";
-    }
-    if (dataonly && Type == "combined")textname += "MuEl";
-    if (dataonly && Type == "elec")textname += "PHMG";
-    if (Type == "elec" && !doMG) textname += "PH_";
-    if (Type == "elec" && doMG) textname += "MG_";
-    if (doNorm) textname += "Norm_";
-    else textname += "Abs_";
-    if (elec == 0)textname += "Dressed.txt";
-    if (elec == 1)textname += "Born.txt";
-    if (elec == 2)textname += "Naked.txt";
-    outputfile.open(textname.c_str());
-    std::string tableheader = "";
-    cout << "test 2" << endl;
-    if (!dataonly) {
-        // if (elec==1){
-        //   if (!doNorm) tableheader="$\\phi^*$ range & \\multicolumn{2}{c|}{Data (pb)} & \\multicolumn{2}{c|}{MadGraph (pb)} & \\multicolumn{2}{c|}{Powheg (pb)} & \\multicolumn{2}{c|}{Resbos (pb)}\\\\ \\hline";
-        //   else         tableheader="$\\phi^*$ range & \\multicolumn{2}{c|}{Data} & \\multicolumn{2}{c|}{MadGraph} & \\multicolumn{2}{c|}{Powheg} & \\multicolumn{2}{c|}{Resbos}\\\\ \\hline";
-        // }
-        // else{
-        if (!doNorm) tableheader = "$\\phi^*$ range & \\multicolumn{2}{c|}{Data (pb)} & \\multicolumn{2}{c|}{MadGraph (pb)} & \\multicolumn{2}{c|}{Powheg (pb)}\\\\ \\hline";
-        else tableheader = "$\\phi^*$ range & \\multicolumn{2}{c|}{Data} & \\multicolumn{2}{c|}{MadGraph} & \\multicolumn{2}{c|}{Powheg}\\\\ \\hline";
-        // }     
-    } else {
-        if (Type == "combined") {
-            if (!doNorm) tableheader = "$\\phi^*$ range & \\multicolumn{2}{c|}{Data: Z \\rightarrow ee (pb)} & \\multicolumn{2}{c|}{Data: Z \\rightarrow \\mu\\mu (pb)} & \\multicolumn{2}{c|}{Data: Z \\rightarrow ll (pb)} \\\\ \\hline";
-            else tableheader = "$\\phi^*$ range & \\multicolumn{2}{c|}{Data: Z \\rightarrow ee} & \\multicolumn{2}{c|}{Data: Z \\rightarrow \\mu\\mu} & \\multicolumn{2}{c|}{Data: Z \\rightarrow ll} \\\\ \\hline";
-        }
-        if (Type == "elec") {
-            if (!doNorm) tableheader = "$\\phi^*$ range & \\multicolumn{2}{c|}{Data unfolded with Powheg (pb)} & \\multicolumn{2}{c|}{Data unfolded with MadGraph (pb)} \\\\ \\hline";
-            else tableheader = "$\\phi^*$ range & \\multicolumn{2}{c|}{Data unfolded with Powheg} & \\multicolumn{2}{c|}{Data unfolded with MadGraph}\\\\ \\hline";
-        }
-    }
-    // for (size_t i=0; i<nbins;i++){
-    cout << "test 3" << endl;
-    for (size_t i = 0; i < (nbins); i++) {
-        if (i % 10 == 0)cout << "still going at " << i / nbins << "%" << endl;
-        double x, y, xmg, ymg, xph, yph, xre, yre, temp_r, temp2_r;
-        g_data_final->GetPoint(i, x, y);
-        g_mg_final->GetPoint(i, xmg, ymg);
-        g_ph_final->GetPoint(i, xph, yph);
-        double temp_d = g_data_final->GetErrorYhigh(i);
-        double temp_m = g_mg_final->GetErrorYhigh(i);
-        double temp_p = g_ph_final->GetErrorYhigh(i);
-        double temp2_d = y;
-        double temp2_m = ymg;
-        double temp2_p = yph;
-        int n_d = 0;
-        int n_m = 0;
-        int n_p = 0;
-        int n_r = 0;
-        int p_d = 0;
-        int p_m = 0;
-        int p_p = 0;
-        int p_r = 0;
-        //cout << temp_d << " " << temp_m << " " << temp_p << " " << temp2_d << " " << temp2_m << " " << temp2_p << endl;
-        while (temp_d < 1) {
-            temp_d = temp_d * 10.;
-            n_d++;
-        }
-        while (temp_m < 1) {
-            temp_m = temp_m * 10.;
-            n_m++;
-        }
-        while (temp_p < 1) {
-            temp_p = temp_p * 10.;
-            n_p++;
-        }
-        cout << "test 4" << endl;
-        while (temp_d > 10) {
-            temp_d = temp_d / 10.;
-            n_d = n_d - 1;
-        }
-        while (temp_m > 10) {
-            temp_m = temp_m / 10.;
-            n_m = n_m - 1;
-        }
-        while (temp_p > 10) {
-            temp_p = temp_p / 10.;
-            n_p = n_p - 1;
-        }
-        if (!dataonly && elec == 1 && g_re_final) {
-            g_re_final->GetPoint(i, xre, yre);
-            temp_r = g_re_final->GetErrorYhigh(i);
-            cout << "test 4.1" << endl;
-            cout << " and our point is " << i << endl;
-            while (temp_r < 1) {
-                temp_r = temp_r * 10.;
-                n_r++;
-            }
-            cout << "test 4.2" << endl;
-            while (temp_r > 10) {
-                temp_r = temp_r / 10.;
-                n_r = n_r - 1;
-            }
-        }
-        cout << "test 5" << endl;
-        while (temp2_d > 10) {
-            temp2_d = temp2_d / 10.;
-            p_d++;
-        }
-        while (temp2_m > 10) {
-            temp2_m = temp2_m / 10.;
-            p_m++;
-        }
-        while (temp2_p > 10) {
-            temp2_p = temp2_p / 10.;
-            p_p++;
-        }
-        while (temp2_d < 1) {
-            temp2_d = temp2_d * 10.;
-            p_d = p_d - 1;
-        }
-        while (temp2_m < 1) {
-            temp2_m = temp2_m * 10.;
-            p_m = p_m - 1;
-        }
 
-        while (temp2_p < 1) {
-            temp2_p = temp2_p * 10.;
-            p_p = p_p - 1;
-        }
-        cout << "test 6" << endl;
-        if (!dataonly && elec == 1 && g_re_final) {
-            g_re_final->GetPoint(i, xre, yre);
-            temp_r = g_re_final->GetErrorYhigh(i);
-            temp2_r = yre;
-            while (temp_r > 10) {
-                temp_r = temp_r / 10.;
-                p_r++;
-            }
-            while (temp2_r < 1) {
-                temp2_r = temp2_r * 10.;
-                p_r = p_r - 1;
-            }
-        }
-        cout << "test 7" << endl;
-        cout << n_d << " " << n_m << " " << n_p << " " << n_d << " " << n_m << " " << n_p << endl;
 
-        if (i % nphistar == 0) {
-            outputfile << std::fixed;
-            outputfile << std::setprecision(1);
-            outputfile << "\n";
-            outputfile << yBins[i / nphistar] << "|Z(y)|" << yBins[(i / nphistar) + 1] << "\n";
-            outputfile << "\n";
-            outputfile << tableheader << "\n";
-            std::cout << tableheader << endl;
+    for (size_t ybin = 0; ybin < ny; ybin++) {
+        ofstream outputfile;
+        std::string textname = "Output/Table_2D_Values_";
+        textname += Tag;
+        if (!dataonly) {
+            textname += Type;
+            textname += "_";
         }
-        outputfile << std::fixed << std::setprecision(3) << phistarBins[i % nphistar] << "-" << phistarBins[i % nphistar + 1] << " & ";
-        if (!(dataonly && Type == "combined")) {
-            if (!(Type == "elec") || !(dataonly)) {
-                //cout << i << " " << y << " " << g_data_final->GetErrorYhigh(i) << endl;
-                PrintValue(outputfile, n_d + 1, p_d, y, g_data_final->GetErrorYhigh(i));
-                //cout << i << " " << y << " " << g_data_final->GetErrorYhigh(i) << endl;
-                outputfile << " & ";
-            }
-            PrintValue(outputfile, n_m + 1, p_m, ymg, g_mg_final->GetErrorYhigh(i));
-            outputfile << " & ";
-            PrintValue(outputfile, n_p + 1, p_p, yph, g_ph_final->GetErrorYhigh(i));
-            if (!dataonly && elec == 1 && g_re_final) {
-                outputfile << " & ";
-                PrintValue(outputfile, n_r + 1, p_r, yre, g_re_final->GetErrorYhigh(i));
-            }
+        if (dataonly && Type == "combined")textname += "MuEl";
+        if (dataonly && Type == "elec")textname += "PHMG";
+        if (Type == "elec" && !doMG) textname += "PH_";
+        if (Type == "elec" && doMG) textname += "MG_";
+        if (doNorm) textname += "Norm_";
+        else textname += "Abs_";
+        if (ybin ==0)textname += "YBin0";
+        else if (ybin ==1)textname += "YBin1";
+        else if (ybin ==2)textname += "YBin2";
+        else if (ybin ==3)textname += "YBin3";
+        else if (ybin ==4)textname += "YBin4";
+        else if (ybin ==5)textname += "YBin5";
+            if (elec == 0)textname += "Dressed.txt";
+        if (elec == 1)textname += "Born.txt";
+        if (elec == 2)textname += "Naked.txt";
+        outputfile.open(textname.c_str());
+        std::string tableheader = "";
+        cout << "test 2" << endl;
+        if (!dataonly) {
+            // if (elec==1){
+            //   if (!doNorm) tableheader="$\\phi^*$ range & \\multicolumn{2}{c|}{Data (pb)} & \\multicolumn{2}{c|}{MadGraph (pb)} & \\multicolumn{2}{c|}{Powheg (pb)} & \\multicolumn{2}{c|}{Resbos (pb)}\\\\ \\hline";
+            //   else         tableheader="$\\phi^*$ range & \\multicolumn{2}{c|}{Data} & \\multicolumn{2}{c|}{MadGraph} & \\multicolumn{2}{c|}{Powheg} & \\multicolumn{2}{c|}{Resbos}\\\\ \\hline";
+            // }
+            // else{
+            if (!doNorm) tableheader = "$\\phi^*$ range & \\multicolumn{2}{c|}{Data (pb)} & \\multicolumn{2}{c|}{MadGraph (pb)} & \\multicolumn{2}{c|}{Powheg (pb)}\\\\ \\hline";
+            else tableheader = "$\\phi^*$ range & \\multicolumn{2}{c|}{Data} & \\multicolumn{2}{c|}{MadGraph} & \\multicolumn{2}{c|}{Powheg}\\\\ \\hline";
+            // }     
         } else {
-            PrintValue(outputfile, n_m + 1, p_m, ymg, g_mg_final->GetErrorYhigh(i));
-            outputfile << " & ";
-            PrintValue(outputfile, n_p + 1, p_p, yph, g_ph_final->GetErrorYhigh(i));
-            outputfile << " & ";
-            PrintValue(outputfile, n_d + 1, p_d, y, g_data_final->GetErrorYhigh(i));
+            if (Type == "combined") {
+                if (!doNorm) tableheader = "$\\phi^*$ range & \\multicolumn{2}{c|}{Data: Z \\rightarrow ee (pb)} & \\multicolumn{2}{c|}{Data: Z \\rightarrow \\mu\\mu (pb)} & \\multicolumn{2}{c|}{Data: Z \\rightarrow ll (pb)} \\\\ \\hline";
+                else tableheader = "$\\phi^*$ range & \\multicolumn{2}{c|}{Data: Z \\rightarrow ee} & \\multicolumn{2}{c|}{Data: Z \\rightarrow \\mu\\mu} & \\multicolumn{2}{c|}{Data: Z \\rightarrow ll} \\\\ \\hline";
+            }
+            if (Type == "elec") {
+                if (!doNorm) tableheader = "$\\phi^*$ range & \\multicolumn{2}{c|}{Data unfolded with Powheg (pb)} & \\multicolumn{2}{c|}{Data unfolded with MadGraph (pb)} \\\\ \\hline";
+                else tableheader = "$\\phi^*$ range & \\multicolumn{2}{c|}{Data unfolded with Powheg} & \\multicolumn{2}{c|}{Data unfolded with MadGraph}\\\\ \\hline";
+            }
         }
-        outputfile << " \\\\ \\hline" << "\n";
+        // for (size_t i=0; i<nbins;i++){
+        for (size_t j = 0; j < (nphistar); j++) {
+            cout<<" our j is "<<j<<" and our ybin is "<<ybin<<endl;
+            size_t i=j+ybin*(nphistar);
+            if (i % 10 == 0)cout << "still going at " << i / nbins << "%" << endl;
+            double x, y, xmg, ymg, xph, yph, xre, yre, temp_r, temp2_r;
+            g_data_final->GetPoint(i, x, y);
+            g_mg_final->GetPoint(i, xmg, ymg);
+            g_ph_final->GetPoint(i, xph, yph);
+            double temp_d = g_data_final->GetErrorYhigh(i);
+            double temp_m = g_mg_final->GetErrorYhigh(i);
+            double temp_p = g_ph_final->GetErrorYhigh(i);
+            double temp2_d = y;
+            double temp2_m = ymg;
+            double temp2_p = yph;
+            int n_d = 0;
+            int n_m = 0;
+            int n_p = 0;
+            int n_r = 0;
+            int p_d = 0;
+            int p_m = 0;
+            int p_p = 0;
+            int p_r = 0;
+            if (temp_d <= 0 || temp_m <= 0 || temp_p <= 0)continue;
+            //cout << temp_d << " " << temp_m << " " << temp_p << " " << temp2_d << " " << temp2_m << " " << temp2_p << endl;
+            while (temp_d < 1) {
+                temp_d = temp_d * 10.;
+                n_d++;
+            }
+            while (temp_m < 1) {
+                temp_m = temp_m * 10.;
+                n_m++;
+            }
+            while (temp_p < 1) {
+                temp_p = temp_p * 10.;
+                n_p++;
+            }
+            cout << "test 4" << endl;
+            while (temp_d > 10) {
+                temp_d = temp_d / 10.;
+                n_d = n_d - 1;
+            }
+            while (temp_m > 10) {
+                temp_m = temp_m / 10.;
+                n_m = n_m - 1;
+            }
+            while (temp_p > 10) {
+                temp_p = temp_p / 10.;
+                n_p = n_p - 1;
+            }
+            if (!dataonly && elec == 1 && g_re_final) {
+                g_re_final->GetPoint(i, xre, yre);
+                temp_r = g_re_final->GetErrorYhigh(i);
+                while (temp_r < 1) {
+                    temp_r = temp_r * 10.;
+                    n_r++;
+                }
+                while (temp_r > 10) {
+                    temp_r = temp_r / 10.;
+                    n_r = n_r - 1;
+                }
+            }
+            while (temp2_d > 10) {
+                temp2_d = temp2_d / 10.;
+                p_d++;
+            }
+            while (temp2_m > 10) {
+                temp2_m = temp2_m / 10.;
+                p_m++;
+            }
+            while (temp2_p > 10) {
+                temp2_p = temp2_p / 10.;
+                p_p++;
+            }
+            while (temp2_d < 1) {
+                temp2_d = temp2_d * 10.;
+                p_d = p_d - 1;
+            }
+            while (temp2_m < 1) {
+                temp2_m = temp2_m * 10.;
+                p_m = p_m - 1;
+            }
+
+            while (temp2_p < 1) {
+                temp2_p = temp2_p * 10.;
+                p_p = p_p - 1;
+            }
+            if (!dataonly && elec == 1 && g_re_final) {
+                g_re_final->GetPoint(i, xre, yre);
+                temp_r = g_re_final->GetErrorYhigh(i);
+                temp2_r = yre;
+                while (temp_r > 10) {
+                    temp_r = temp_r / 10.;
+                    p_r++;
+                }
+                while (temp2_r < 1) {
+                    temp2_r = temp2_r * 10.;
+                    p_r = p_r - 1;
+                }
+            }
+            cout << n_d << " " << n_m << " " << n_p << " " << n_d << " " << n_m << " " << n_p << endl;
+
+            // if (i % nphistar == 0) {
+            //     outputfile << std::fixed;
+            //     outputfile << std::setprecision(1);
+            //     outputfile << "\n";
+            //     outputfile << yBins[i / nphistar] << "|Z(y)|" << yBins[(i / nphistar) + 1] << "\n";
+            //     outputfile << "\n";
+            //     outputfile << tableheader << "\n";
+            //     std::cout << tableheader << endl;
+            // }
+            outputfile << std::fixed << std::setprecision(3) << phistarBins[i % nphistar] << "-" << phistarBins[i % nphistar + 1] << " & ";
+            if (!(dataonly && Type == "combined")) {
+                if (!(Type == "elec") || !(dataonly)) {
+                    //cout << i << " " << y << " " << g_data_final->GetErrorYhigh(i) << endl;
+                    PrintValue(outputfile, n_d + 1, p_d, y, g_data_final->GetErrorYhigh(i));
+                    //cout << i << " " << y << " " << g_data_final->GetErrorYhigh(i) << endl;
+                    outputfile << " & ";
+                }
+                PrintValue(outputfile, n_m + 1, p_m, ymg, g_mg_final->GetErrorYhigh(i));
+                outputfile << " & ";
+                PrintValue(outputfile, n_p + 1, p_p, yph, g_ph_final->GetErrorYhigh(i));
+                if (!dataonly && elec == 1 && g_re_final) {
+                    outputfile << " & ";
+                    PrintValue(outputfile, n_r + 1, p_r, yre, g_re_final->GetErrorYhigh(i));
+                }
+            } else {
+                PrintValue(outputfile, n_m + 1, p_m, ymg, g_mg_final->GetErrorYhigh(i));
+                outputfile << " & ";
+                PrintValue(outputfile, n_p + 1, p_p, yph, g_ph_final->GetErrorYhigh(i));
+                outputfile << " & ";
+                PrintValue(outputfile, n_d + 1, p_d, y, g_data_final->GetErrorYhigh(i));
+            }
+            outputfile << " \\\\ \\hline" << "\n";
+
+        }
+        outputfile.close();
     }
-    outputfile.close();
 }
 
 TGraphAsymmErrors* CreateDummy(TGraphAsymmErrors* graph) {
@@ -461,6 +485,7 @@ vector<TGraphAsymmErrors*> CreateDummy(vector<TGraphAsymmErrors*> graphs) {
 
 void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, TGraphAsymmErrors* g_ph_final, TGraphAsymmErrors* g_ratio_phistar, TGraphAsymmErrors* g_ratio_mg_phistar, TGraphAsymmErrors* g_ratio_ph_phistar, bool isPlot2 = 0, TGraphAsymmErrors* g_re_final = 0, TGraphAsymmErrors* g_ratio_re_phistar = 0) {
     cout << "test 2.5" << endl;
+    size_t MarkerSize = 2;
     double wordSize = .043;
     vector<TGraphAsymmErrors*> g_data = SplitGraph(g_data_final);
     vector<TGraphAsymmErrors*> g_mg = SplitGraph(g_mg_final);
@@ -499,30 +524,30 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
         g_dummy[i]->Draw("A2");
         g_mg[i]->SetMarkerColor(kBlue - 7);
         g_mg[i]->SetLineColor(kBlue - 7);
-        g_mg[i]->SetMarkerSize(1);
+        g_mg[i]->SetMarkerSize(MarkerSize);
         g_mg[i]->SetLineWidth(2);
         g_mg[i]->SetMarkerStyle(21);
         g_mg[i]->Draw("PEsame");
         g_ph[i]->SetMarkerColor(kRed);
         g_ph[i]->SetLineColor(kRed);
-        g_ph[i]->SetMarkerSize(1);
+        g_ph[i]->SetMarkerSize(MarkerSize);
         g_ph[i]->SetLineWidth(2);
         g_ph[i]->SetMarkerStyle(22);
         g_ph[i]->Draw("PEsame");
         if (!isPlot2 && elec == 1 && g_re_final) {
             g_re[i]->SetMarkerColor(kGreen + 1);
             g_re[i]->SetLineColor(kGreen + 1);
-            g_re[i]->SetMarkerSize(1);
+            g_re[i]->SetMarkerSize(MarkerSize);
             g_re[i]->SetLineWidth(2);
             g_re[i]->SetMarkerStyle(23);
             g_re[i]->Draw("PEsame");
         }
-        g_data[i]->SetFillColor(kYellow);
-        g_data[i]->SetMarkerSize(1);
+        g_data[i]->SetFillColor(kGray);
+        g_data[i]->SetMarkerSize(MarkerSize);
         g_data[i]->SetLineWidth(2);
         g_data[i]->SetMarkerStyle(20);
         g_data[i]->Draw("PEsame");
-        g_data[i]->SetFillColor(kYellow);
+        g_data[i]->SetFillColor(kGray);
 
         TLegend* leg;
         if (isPlot2) leg = new TLegend(0.15, 0.06, 0.80, 0.27);
@@ -540,32 +565,32 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
                 leg->AddEntry(g_ph[i], "#gamma*/Z #rightarrow ee (Powheg+PYTHIA6 Z2*)", "P");
                 //ToDo AMCAt decisions
                 //if (elec == 1 && g_re_final) leg->AddEntry(g_re[i], "#gamma*/Z #rightarrow ee (Resbos)", "P");
-                if (elec == 1 && g_re_final) leg->AddEntry(g_re[i], "#gamma*/Z #rightarrow ee (POWHEG+PYTHIA8)", "P");
+                if (elec == 1 && g_re_final) leg->AddEntry(g_re[i], "#gamma*/Z #rightarrow ee (POWHEG + PYTHIA 8)", "P");
             }
             if (Type == "muon") {
                 leg->AddEntry(g_mg[i], "#gamma*/Z #rightarrow #mu#mu (MadGraph+PYTHIA6 Z2*)", "P");
                 leg->AddEntry(g_ph[i], "#gamma*/Z #rightarrow #mu#mu (Powheg+PYTHIA6 Z2*)", "P");
                 //if (elec == 1 && g_re_final) leg->AddEntry(g_re[i], "#gamma*/Z #rightarrow #mu#mu (Resbos)", "P");
-                if (elec == 1 && g_re_final) leg->AddEntry(g_re[i], "#gamma*/Z #rightarrow #mu#mu (POWHEG+PYTHIA8 CUETP8M1)", "P");
+                if (elec == 1 && g_re_final) leg->AddEntry(g_re[i], "#gamma*/Z #rightarrow #mu#mu (POWHEG + PYTHIA 8 CUETP8M1)", "P");
             }
             if (Type == "combined") {
                 leg->AddEntry(g_mg[i], "#gamma*/Z #rightarrow ll (MadGraph+PYTHIA6 Z2*)", "P");
                 leg->AddEntry(g_ph[i], "#gamma*/Z #rightarrow ll (Powheg+PYTHIA6 Z2*)", "P");
                 //if (elec == 1 && g_re_final) leg->AddEntry(g_re[i], "#gamma*/Z #rightarrow ll (Resbos)", "P");
-                if (elec == 1 && g_re_final) leg->AddEntry(g_re[i], "#gamma*/Z #rightarrow ll (POWHEG+PYTHIA8 CUETP8M1)", "P");
+                if (elec == 1 && g_re_final) leg->AddEntry(g_re[i], "#gamma*/Z #rightarrow ll (POWHEG + PYTHIA 8 CUETP8M1)", "P");
             }
         } else {
             if (Type == "combined") {
                 leg->AddEntry(g_mg[i], "#gamma*/Z #rightarrow ee (data)", "P");
                 leg->AddEntry(g_ph[i], "#gamma*/Z #rightarrow #mu#mu (data)", "P");
-                if (doMG)leg->AddEntry(g_data[i], "#gamma*/Z #rightarrow ll (MadGraph+PYTHIA6 Z2*)", "PEF");
-                else leg->AddEntry(g_data[i], "#gamma*/Z #rightarrow ll (Powheg+PYTHIA6 Z2*)", "PEF");
+                if (doMG)leg->AddEntry(g_data[i], "#gamma*/Z #rightarrow ll (MadGraph + PYTHIA 6 Z2*)", "PEF");
+                else leg->AddEntry(g_data[i], "#gamma*/Z #rightarrow ll (Powheg + PYTHIA 6 Z2*)", "PEF");
             }
             if (Type == "elec") {
                 leg->AddEntry(g_mg[i], "Data (unfolded with Powheg)", "P");
                 leg->AddEntry(g_ph[i], "Data (unfolded with MadGraph)", "P");
-                if (doMG)leg->AddEntry(g_data[i], "#gamma*/Z #rightarrow ll (MadGraph+PYTHIA6 Z2*)", "PEF");
-                else leg->AddEntry(g_data[i], "#gamma*/Z #rightarrow ll (Powheg+PYTHIA6 Z2*)", "PEF");
+                if (doMG)leg->AddEntry(g_data[i], "#gamma*/Z #rightarrow ll (MadGraph + PYTHIA 6 Z2*)", "PEF");
+                else leg->AddEntry(g_data[i], "#gamma*/Z #rightarrow ll (Powheg + PYTHIA 6 Z2*)", "PEF");
             }
         }
         leg->Draw();
@@ -623,25 +648,25 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
         if (isPlot2 && (!doNorm)) r_data[i]->GetYaxis()->SetRangeUser(0.7, 1.3);
         r_data[i]->GetYaxis()->SetNdivisions(2, 5, 0);
         r_data[i]->GetYaxis()->SetTitleOffset(0.45);
-        r_data[i]->SetFillColor(kYellow);
+        r_data[i]->SetFillColor(kGray);
         r_data[i]->GetXaxis()->SetTitleSize(0.15);
         r_data[i]->GetXaxis()->CenterTitle();
         r_data[i]->GetYaxis()->CenterTitle();
         r_data[i]->Draw("APE2");
-        r_mg[i]->SetMarkerSize(1);
+        r_mg[i]->SetMarkerSize(MarkerSize);
         r_mg[i]->SetLineWidth(2);
         r_mg[i]->SetMarkerStyle(21);
         r_mg[i]->SetMarkerColor(kBlue - 7);
         r_mg[i]->SetLineColor(kBlue - 7);
         r_mg[i]->Draw("PEsame");
-        r_ph[i]->SetMarkerSize(1);
+        r_ph[i]->SetMarkerSize(MarkerSize);
         r_ph[i]->SetLineWidth(2);
         r_ph[i]->SetMarkerStyle(22);
         r_ph[i]->SetMarkerColor(kRed);
         r_ph[i]->SetLineColor(kRed);
         r_ph[i]->Draw("PEsame");
         if (!isPlot2 && elec == 1 && g_re_final) {
-            r_re[i]->SetMarkerSize(1);
+            r_re[i]->SetMarkerSize(MarkerSize);
             r_re[i]->SetLineWidth(2);
             r_re[i]->SetMarkerStyle(23);
             r_re[i]->SetMarkerColor(kGreen + 1);
@@ -689,7 +714,7 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
         ScaleGraph(g_dummy[scaleGraphs], ScaleFactor);
         ScaleGraph(g_data[ scaleGraphs], ScaleFactor);
         ScaleGraph(g_ph[scaleGraphs], ScaleFactor);
-        //PYTHIA8Seperated[scaleGraphs]->SetMarkerSize(1);
+        //PYTHIA8Seperated[scaleGraphs]->SetMarkerSize(MarkerSize);
         //PYTHIA8Seperated[scaleGraphs]->SetLineWidth(2);
         //PYTHIA8Seperated[scaleGraphs]->SetMarkerStyle(22);
         //PYTHIA8Seperated[scaleGraphs]->SetMarkerColor(kRed);
@@ -701,13 +726,13 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
     else dummyhist->GetYaxis()->SetRangeUser(0.0005, 5e9);
 
     dummyhist->GetXaxis()->SetTitle("#phi*");
-    dummyhist->GetXaxis()->SetTitleSize(1.2*wordSize);
-    dummyhist->GetXaxis()->SetTitleOffset(.5);
+    dummyhist->GetXaxis()->SetTitleSize(1.2 * wordSize);
+    dummyhist->GetXaxis()->SetTitleOffset(1.0);
     dummyhist->GetXaxis()->CenterTitle();
     dummyhist->GetYaxis()->CenterTitle();
     if (doNorm)dummyhist->GetYaxis()->SetTitle("1/#sigma^{fid} #bullet d#sigma^{fid}/d#phi*d|y|");
     else dummyhist->GetYaxis()->SetTitle("d#sigma^{fid}/d#phi*d|y|");
-    dummyhist->GetYaxis()->SetTitleSize(wordSize*1.2);
+    dummyhist->GetYaxis()->SetTitleSize(wordSize * 1.2);
     dummyhist->GetYaxis()->SetTitleOffset(1.1);
     dummyhist->GetYaxis()->SetLabelSize(wordSize);
     dummyhist->GetXaxis()->SetLabelSize(wordSize);
@@ -724,7 +749,7 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
         MCHistos[yBin]->SetLineColor(kRed);
         g_data[yBin]->SetMarkerColor(kBlack);
         //MCHistos[yBin]->SetLineWidth(2);
-        g_data[yBin]->SetMarkerSize(1.6);
+        g_data[yBin]->SetMarkerSize(MarkerSize);
         g_data[yBin]->Draw("PE");
         MCHistos[yBin]->Draw("same");
         cout << "Our bin 1 is " << MCHistos[yBin]->GetBinLowEdge(1) << endl;
@@ -758,7 +783,7 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
     leg->Draw();
 
     TLegend* leg2;
-    leg2 = new TLegend(0.45, 0.8495, 0.8274, 0.8799); //TLegend(0.45,0.73,0.94,0.93);//.19 0.06
+    leg2 = new TLegend(0.4, 0.8495, 0.8274, 0.8799); //TLegend(0.45,0.73,0.94,0.93);//.19 0.06
     leg2->SetFillStyle(0);
     leg2->SetBorderSize(0);
     leg2->SetLineWidth(1);
@@ -768,25 +793,28 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
 
     if (Type == "elec") {
 
-        leg2->AddEntry(MCHistos[0], "POWHEG+PYTHIA6(Z2*)", "l");
+        leg2->AddEntry(MCHistos[0], "POWHEG + PYTHIA 6 (Z2*)", "l");
         //ToDo AMCAt decisions
     }
     if (Type == "combined") {
-        leg2->AddEntry(MCHistos[0], "POWHEG+PYTHIA6(Z2*)", "l");
+        leg2->AddEntry(MCHistos[0], "POWHEG + PYTHIA 6 (Z2*)", "l");
         //if (elec == 1 && g_re_final) leg->AddEntry(g_re[i], "#gamma*/Z #rightarrow ll (Resbos)", "P");
     }
     leg2->Draw();
 
-    if (true) {//truning off this plot for ...
-        TLatex mark;
-        // mark.SetTextSize(0.05);
-        mark.SetTextSize(0.04);
-        mark.SetNDC(true);
-        mark.DrawLatex(0.717, 0.907, "19.7 fb^{-1} (8 TeV)");
-        mark.DrawLatex(0.135, 0.907, "CMS");
-        mark.DrawLatex(0.16, 0.86, "ee+#mu#mu Combined");
-       
-    }
+    TLatex mark;
+    // mark.SetTextSize(0.05);
+    mark.SetTextSize(0.04);
+    mark.SetNDC(true);
+    mark.DrawLatex(0.717, 0.907, "19.7 fb^{-1} (8 TeV)");
+    mark.DrawLatex(0.135, 0.907, "CMS");
+
+    TLatex mark2;
+    // mark.SetTextSize(0.05);
+    mark2.SetTextSize(0.04);
+    mark2.SetNDC(true);
+    mark2.SetTextFont(42);
+    mark2.DrawLatex(0.17, 0.39, "ee + #mu#mu Combined");
 
     std::string plotname = "Plots/ZShape_2D_All";
     if ((Type == "elec" || isPlot2) && !doMG) plotname += "PH_";
@@ -802,10 +830,10 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
 
     if (doNorm) {
         FinalPhiTot->SaveAs("/home/user1/lesko/work/Phistar/papers/SMP-15-002/trunk/ZShape_2D_AllPH_Norm_Born.pdf");
-    }
-    else
-        {
+         FinalPhiTot->SaveAs("/home/user1/lesko/work/Phistar/papers/SMP-15-002/trunk/ZShape_2D_AllPH_Norm_Born.png");
+    } else {
         FinalPhiTot->SaveAs("/home/user1/lesko/work/Phistar/papers/SMP-15-002/trunk/ZShape_2D_AllPH_Abs_Born.pdf");
+        FinalPhiTot->SaveAs("/home/user1/lesko/work/Phistar/papers/SMP-15-002/trunk/ZShape_2D_AllPH_Abs_Born.png");
     }
 
 }
@@ -969,7 +997,7 @@ void MakeFinalPlots() {
 
 
     cout << "test 1" << endl;
-    //PrintFinal(g_data_final, g_mg_final, g_ph_final, 0, g_re_final);
+    PrintFinal(g_data_final, g_mg_final, g_ph_final, 0, g_re_final);
     //cout << "test 2" << endl;
     PlotFinal(g_data_final, g_mg_final, g_ph_final, g_ratio_phistar, g_ratio_mg_phistar, g_ratio_ph_phistar, 0, g_re_final, g_ratio_re_phistar);
 }
@@ -1028,7 +1056,7 @@ void MakeFinalPlots2() {
     TGraphAsymmErrors* g_ratio_mg = CreateRatio(g_mg_final, g_mg_final, 1);
     TGraphAsymmErrors* g_ratio_muon = CreateRatio(g_mg_final, g_data_muon, 0);
     //
-    //  PrintFinal(g_data_final,g_mg_final,g_ph_final);
+    //PrintFinal(g_mg_final,g_mg_final,g_ph_final);
     PlotFinal(g_mg_final, g_data_elec, g_data_muon, g_ratio_mg, g_ratio_elec, g_ratio_muon, 1);
 
     // textn="Comb_Hist_";
@@ -1046,7 +1074,7 @@ void MakeFinalPlots2() {
 
 TH1D* HistoWithName(string name) {
 
-    TH1D* SanityCheck = new TH1D(name.c_str(), "  ", 1, .001, 3.277);
+    TH1D* SanityCheck = new TH1D(name.c_str(), "  ", 1, .001, 3.3);
     SanityCheck->GetYaxis()->SetRangeUser(0.57, 1.93);
     SanityCheck->GetYaxis()->SetNdivisions(303);
     SanityCheck->GetYaxis()->SetLabelSize(0.125);
@@ -1060,6 +1088,18 @@ TH1D* HistoWithName(string name) {
     //SanityCheck->GetYaxis()->SetTitle("1/#sigma^{fid} #bullet d#sigma^{fid}/d#phi*d|y|/(1/#sigma^{fid} #bullet d#sigma^{fid}/d#phi*d|y| 0.0<|y_{ee}| < 0.4)");
     SanityCheck->GetXaxis()->CenterTitle();
     return SanityCheck;
+}
+
+double CorrectInt(TGraphAsymmErrors* Intagrateme) {
+    double intValue = 0;
+
+    for (size_t Bin = 0; Bin < nphistar - 2; Bin++) {
+        double x, y;
+        Intagrateme->GetPoint(Bin, x, y);
+        intValue += y * (phistarBins[Bin + 1] - phistarBins[Bin]);
+    }
+
+    return intValue;
 }
 
 void MakePlotCompBin0() {
@@ -1122,7 +1162,11 @@ void MakePlotCompBin0() {
     //Normalizer(MCPowPlot);
     vector<TGraphAsymmErrors*> PowBin0Ration = Bin0Ratio(MCPowPlot);
 
-    cout << "okay our bin 0 error is " << MCMadPlot->GetErrorYhigh(37);
+    for (int i = 0; i < PowBin0Ration[1]->GetN(); i++) {
+        double x, y;
+        PowBin0Ration[0]->GetPoint(i, x, y);
+    }
+
 
     vector<TGraphAsymmErrors*> MadBin0Ration = Bin0Ratio(MCMadPlot);
     vector<TGraphAsymmErrors*> DataBin0Ration = Bin0Ratio(DataPlot);
@@ -1133,8 +1177,8 @@ void MakePlotCompBin0() {
             double xerror = (phistarBins[phiBin + 1] - phistarBins[phiBin]) / 2;
             DataBin0Ration[yBin]->SetPointError(phiBin, xerror, xerror, yerror, yerror);
         }
-        DataBin0Ration[yBin]->SetFillColor(kYellow);
-        DataBin0Ration[yBin]->SetLineColor(kYellow);
+        DataBin0Ration[yBin]->SetFillColor(kGray);
+        DataBin0Ration[yBin]->SetLineColor(kGray);
     }
 
     vector<TGraphAsymmErrors*> ResbosBin0Ratio = Bin0Ratio(ResbosAll, true);
@@ -1154,9 +1198,9 @@ void MakePlotCompBin0() {
         ScaleGraph(AMCatNloBin0Ratio[i], scalefactor);
     }
 
-
+    size_t markersize = 1;
     for (size_t i = 1; i < 6; i++) {
-        PowBin0Ration[i]->SetMarkerSize(1);
+        PowBin0Ration[i]->SetMarkerSize(markersize);
         PowBin0Ration[i]->SetLineWidth(2);
         PowBin0Ration[i]->SetMarkerStyle(kFullSquare);
         PowBin0Ration[i]->SetMarkerColor(kRed);
@@ -1164,24 +1208,24 @@ void MakePlotCompBin0() {
 
         ResbosBin0Ratio[i]->SetMarkerColor(kGreen + 1);
         ResbosBin0Ratio[i]->SetLineColor(kGreen + 1);
-        ResbosBin0Ratio[i]->SetMarkerSize(1);
+        ResbosBin0Ratio[i]->SetMarkerSize(markersize);
         ResbosBin0Ratio[i]->SetLineWidth(2);
         ResbosBin0Ratio[i]->SetMarkerStyle(kStar);
 
-        AMCatNloBin0Ratio[i]->SetMarkerSize(1);
+        AMCatNloBin0Ratio[i]->SetMarkerSize(markersize);
         AMCatNloBin0Ratio[i]->SetLineWidth(2);
         AMCatNloBin0Ratio[i]->SetMarkerStyle(kOpenCircle);
         AMCatNloBin0Ratio[i]->SetMarkerColor(kCyan + 2);
         AMCatNloBin0Ratio[i]->SetLineColor(kCyan + 2);
 
-        POWHEGPyth8Bin0Ratio[i]->SetMarkerSize(1);
+        POWHEGPyth8Bin0Ratio[i]->SetMarkerSize(markersize);
         POWHEGPyth8Bin0Ratio[i]->SetLineWidth(2);
         POWHEGPyth8Bin0Ratio[i]->SetMarkerStyle(kOpenSquare);
         POWHEGPyth8Bin0Ratio[i]->SetMarkerColor(kRed);
         POWHEGPyth8Bin0Ratio[i]->SetLineColor(kRed);
 
 
-        MadBin0Ration[i]->SetMarkerSize(1);
+        MadBin0Ration[i]->SetMarkerSize(markersize);
         MadBin0Ration[i]->SetLineWidth(2);
         MadBin0Ration[i]->SetMarkerStyle(kFullTriangleUp);
         MadBin0Ration[i]->SetMarkerColor(kBlue - 7);
@@ -1216,9 +1260,15 @@ void MakePlotCompBin0() {
     DataBin0Ration[4]->SetMarkerStyle(20);
     DataBin0Ration[5]->SetMarkerStyle(20);
 
+    DataBin0Ration[1]->SetMarkerSize(markersize);
+    DataBin0Ration[2]->SetMarkerSize(markersize);
+    DataBin0Ration[3]->SetMarkerSize(markersize);
+    DataBin0Ration[4]->SetMarkerSize(markersize);
+    DataBin0Ration[5]->SetMarkerSize(markersize);
+
     //DataBin0Ration[1]->GetYaxis()->SetRangeUser(0.05, 1e4);
 
-    
+
 
     TH1D* dumby1 = HistoWithName("name 1");
     TH1D* dumby2 = HistoWithName("name 2");
@@ -1226,20 +1276,18 @@ void MakePlotCompBin0() {
     TH1D* dumby4 = HistoWithName("name 4");
     TH1D* dumby5 = HistoWithName("name 5");
     dumby5->GetXaxis()->SetLabelSize(.105);
-    
-    dumby5->GetXaxis()->SetTitleOffset(0.5);
+
+    dumby5->GetXaxis()->SetTitleOffset(1.05);
     dumby5->GetYaxis()->SetLabelSize(.11);
 
 
 
-    TLatex mark;
-    mark.SetTextSize(TextSize*1.2);
-    mark.SetTextFont(42);
-    mark.SetNDC(true);
+
 
     TCanvas* FinalPhiPow = new TCanvas("Powheg", "PowhegPlot", 800, 900);
     gStyle->SetOptStat("");
     FinalPhiPow->cd();
+    FinalPhiPow->SetLeftMargin(0);
 
     vector<TPad*> Info;
     Info.push_back((new TPad("p1", "p1", 0, .9 - .85 / 5, 1, .9)));
@@ -1262,12 +1310,13 @@ void MakePlotCompBin0() {
     //FinalPhiPow->SetLogy();
 
     //SanityCheck->Draw();
+    double rightmargin = .1;
     Info[0]->cd();
     gPad->SetLogx();
     gPad->SetTopMargin(0);
     gPad->SetBottomMargin(0);
-    gPad->SetRightMargin(0.06);
-    dumby1->GetYaxis()->SetRangeUser(.92, 1.11);
+    gPad->SetRightMargin(rightmargin);
+    dumby1->GetYaxis()->SetRangeUser(.88, 1.08);
     dumby1->Draw();
 
 
@@ -1281,11 +1330,13 @@ void MakePlotCompBin0() {
     DataBin0Ration[1]->Draw("Psame");
     gPad->RedrawAxis();
 
+
+    TGraphAsymmErrors* SANITY = CreateDummy(DataBin0Ration[2]);
     Info[1]->cd();
     gPad->SetLogx();
     gPad->SetTopMargin(0);
     gPad->SetBottomMargin(0);
-    gPad->SetRightMargin(0.06);
+    gPad->SetRightMargin(rightmargin);
     dumby2->GetYaxis()->SetRangeUser(.83, 1.09);
     dumby2->Draw();
 
@@ -1296,13 +1347,14 @@ void MakePlotCompBin0() {
     AMCatNloBin0Ratio[2]->Draw("PEsame");
     MadBin0Ration[2]->Draw("PEsame");
     DataBin0Ration[2]->Draw("Psame");
-    gPad->RedrawAxis();
+    Info[1]->RedrawAxis();
+    FinalPhiPow->RedrawAxis();
 
     Info[2]->cd();
     gPad->SetLogx();
     gPad->SetTopMargin(0);
     gPad->SetBottomMargin(0);
-    gPad->SetRightMargin(0.06);
+    gPad->SetRightMargin(rightmargin);
     dumby3->GetYaxis()->SetRangeUser(.51, 1.09);
     dumby3->Draw();
 
@@ -1319,8 +1371,8 @@ void MakePlotCompBin0() {
     gPad->SetLogx();
     gPad->SetTopMargin(0);
     gPad->SetBottomMargin(0);
-    gPad->SetRightMargin(0.06);
-    dumby4->GetYaxis()->SetRangeUser(.26, .74);
+    gPad->SetRightMargin(rightmargin);
+    dumby4->GetYaxis()->SetRangeUser(.21, .74);
     dumby4->Draw();
 
     DataBin0Ration[4]->Draw("PE2same");
@@ -1335,13 +1387,14 @@ void MakePlotCompBin0() {
     Info[4]->cd();
     gPad->SetLogx();
     gPad->SetTopMargin(0);
-    gPad->SetRightMargin(0.06);
+    gPad->SetRightMargin(rightmargin);
     gPad->SetBottomMargin(.25);
     dumby5->GetYaxis()->SetRangeUser(0, .24);
-    dumby5->GetXaxis()->SetTitleSize(TextSize*6);
+    dumby5->GetXaxis()->SetTitleSize(TextSize * 6);
+    dumby5->GetYaxis()->SetLabelSize(TextSize * 4.8);
     dumby5->Draw();
 
-    
+
 
     DataBin0Ration[5]->Draw("PE2same");
     PowBin0Ration[5]->Draw("PEsame");
@@ -1359,11 +1412,11 @@ void MakePlotCompBin0() {
     // mark.SetTextSize(0.05);
     mark4.SetTextSize(TextSize);
     mark4.SetNDC(true);
-    mark4.DrawLatex(0.8, 0.975, "19.7 fb^{-1} (8 TeV)");
+    mark4.DrawLatex(0.761, 0.975, "19.7 fb^{-1} (8 TeV)");
     mark4.DrawLatex(0.1, 0.975, "CMS");
 
 
-    TLegend* leg2 = new TLegend(0.1, 0.90, 0.94, 0.97);
+    TLegend* leg2 = new TLegend(0.1, 0.90, 0.90, 0.97);
     leg2->SetNColumns(2);
     leg2->SetFillStyle(0);
     //leg2->SetBorderSize(1);
@@ -1371,31 +1424,58 @@ void MakePlotCompBin0() {
     leg2->SetTextFont(22);
     leg2->SetTextSize(TextSize);
 
-    leg2->AddEntry(DataBin0Ration[1], "Combined Data", "FP");
-    leg2->AddEntry(AMCatNloBin0Ratio[1], "aMC@NLO+PYTHIA8(CUETP8M1)", "P");
+    leg2->AddEntry(DataBin0Ration[1], "ee + #mu#muCombined Data", "FP");
+    leg2->AddEntry(AMCatNloBin0Ratio[1], "aMC@NLO + PYTHIA 8 (CUETP8M1)", "P");
     leg2->AddEntry(ResbosBin0Ratio[1], "ResBos", "P");
-    leg2->AddEntry(MadBin0Ration[4], "MadGraph+PYTHIA6 (Z2*)", "P");
-    leg2->AddEntry(PowBin0Ration[1], "POWHEG+PYTHIA6 (Z2*)", "P");
-    leg2->AddEntry(POWHEGPyth8Bin0Ratio[1], "POWHEG+PYTHIA8 (CT10)", "P");
+    leg2->AddEntry(MadBin0Ration[4], "MadGraph + PYTHIA 6 (Z2*)", "P");
+    leg2->AddEntry(PowBin0Ration[1], "POWHEG + PYTHIA 6 (Z2*)", "P");
+    leg2->AddEntry(POWHEGPyth8Bin0Ratio[1], "POWHEG + PYTHIA 8 (CUETP8M1)", "P");
 
     leg2->Draw();
 
-    
-    mark.DrawLatex(0.14, 0.875, "|y| < 0.8");
+
+    TLatex mark;
+    mark.SetTextSize(TextSize * 1.2);
+    mark.SetTextFont(42);
+    mark.SetNDC(true);
+
+    mark.DrawLatex(0.14, 0.875, "0.4<|y| < 0.8");
     mark.DrawLatex(0.14, 0.704, "0.8 < |y| < 1.2");
     mark.DrawLatex(0.14, 0.535, "1.2 < |y| < 1.6");
     mark.DrawLatex(0.14, 0.365, "1.6 < |y| < 2.0");
     mark.DrawLatex(0.14, 0.19, "2.0 < |y| < 2.4");
 
     mark.SetTextAngle(90);
-    mark.DrawLatex(.039, .35, "d^{2}#sigma^{fid}/dphi*d|y|) / (d^{2}#sigma^{fid, |y|<0.4}/dphi*d|y|");
+    mark.DrawLatex(.05, .35, "d^{2}#sigma^{fid}/d#phi*d|y|) / (d^{2}#sigma^{fid, |y|<0.4}/d#phi*d|y|");
 
 
 
     FinalPhiPow->Print("PowHegBin0Rat.pdf");
     FinalPhiPow->Print("PowHegBin0Rat.png");
 
-FinalPhiPow->Print("/home/user1/lesko/work/Phistar/papers/SMP-15-002/trunk/NormalisedToBin0.pdf");
+
+
+
+
+    FinalPhiPow->Print("/home/user1/lesko/work/Phistar/papers/SMP-15-002/trunk/NormalisedToBin0.pdf");
     //delete FinalPhiPow;
 
+
+
+
+
+    if (false) {
+        double DataValue = CorrectInt(DataBin0Ration[5]);
+        double AMCInt = CorrectInt(AMCatNloBin0Ratio[5]);
+        double RebInt = CorrectInt(ResbosBin0Ratio[5]);
+        double MadInt = CorrectInt(MadBin0Ration[5]);
+        double PowInt = CorrectInt(PowBin0Ration[5]);
+        double PowPyth8Int = CorrectInt(POWHEGPyth8Bin0Ratio[5]);
+        cout << endl << "Data: " << DataValue << endl;
+        cout << "AMCInt " << AMCInt << endl;
+        cout << "ResBos: " << RebInt << endl;
+        cout << "MadGraph: " << MadInt << endl;
+        cout << " PowHeg pyth6 " << PowInt << endl;
+        cout << "Pow+Pyth8 " << PowPyth8Int << endl;
+    }
 }

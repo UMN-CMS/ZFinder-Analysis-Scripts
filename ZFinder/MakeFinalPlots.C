@@ -33,7 +33,7 @@ const bool debug = true;
 const int elec = 1;
 const int doMG = 0;
 const std::string Tag = "";
-const std::string Type = "combined"; //elec, muon or combined
+const std::string Type = "elec"; //elec, muon or combined
 bool AverageData = false;
 
 const double phistarBins[] = {0.000, 0.004, 0.008, 0.012, 0.016, 0.020, 0.024, 0.029, 0.034, 0.039, 0.045, 0.052, 0.057, 0.064, 0.072, 0.081, 0.091, 0.102, 0.114, 0.128, 0.145, 0.165, 0.189, 0.219, 0.258, 0.312, 0.391, 0.524, 0.695, 0.918, 1.153, 1.496, 1.947, 2.522, 3.277};
@@ -78,42 +78,54 @@ TGraphAsymmErrors * ResbosFromRaj(int FType = 0) {//Only plotting Ratio soooo wh
         if (FType == 2)FName = "D2/PhiStar_AMCAT_NLO_phistar_Status3_Normalized.root";
     } else {
         if (FType == 0)FName = "D2/PhiStar_Resbos_phistar_Status3_Absolute.root";
-        else if (FType == 1)FName = "D2/PhiStar_PowhegPythia8_NLO_phistar_Status3_Absolute.root";
+            else if (FType == 1)FName = "D2/PhiStar_PowhegPythia8_NLO_phistar_Status3_Absolute.root";
+        //else if (FType == 1)FName = "D2/TestPowHegPyth8.root";
         else if (FType == 2) FName = "D2/PhiStar_AMCAT_NLO_phistar_Status3_Absolute.root";
+        //else if (FType == 2) FName = "D2/PhiStar_AMCAT_NLO_phistar_Status3_Absolute.root";
     }
+    cout<<"OUR TYPE IS "<<FType<<endl<<endl;
+
     TFile ResFile(FName.c_str());
-    TH1D* Bin0 = (TH1D*) ResFile.Get("PhiStar_YBin_0");
-    TH1D* Bin1 = (TH1D*) ResFile.Get("PhiStar_YBin_1");
-    TH1D* Bin2 = (TH1D*) ResFile.Get("PhiStar_YBin_2");
-    TH1D* Bin3 = (TH1D*) ResFile.Get("PhiStar_YBin_3");
-    TH1D* Bin4 = (TH1D*) ResFile.Get("PhiStar_YBin_4");
-    TH1D* Bin5 = (TH1D*) ResFile.Get("PhiStar_YBin_5");
-    //TH1D* Allstuff = (TH1D*) ResFile.Get("PhiStar")
-    if (Bin0 == 0)cout << "missing Bin0" << endl;
-    if (Bin1 == 0)cout << "missing Bin1" << endl;
-    if (Bin2 == 0)cout << "missing Bin2" << endl;
-    if (Bin3 == 0)cout << "missing Bin3" << endl;
-    if (Bin4 == 0)cout << "missing Bin4" << endl;
-    if (Bin5 == 0)cout << "missing Bin5" << endl;
+    if (false) {//Delete me?
+        TH1D* Bin0 = (TH1D*) ResFile.Get("PhiStar_YBin_0");
+        TH1D* Bin1 = (TH1D*) ResFile.Get("PhiStar_YBin_1");
+        TH1D* Bin2 = (TH1D*) ResFile.Get("PhiStar_YBin_2");
+        TH1D* Bin3 = (TH1D*) ResFile.Get("PhiStar_YBin_3");
+        TH1D* Bin4 = (TH1D*) ResFile.Get("PhiStar_YBin_4");
+        TH1D* Bin5 = (TH1D*) ResFile.Get("PhiStar_YBin_5");
+        //TH1D* Allstuff = (TH1D*) ResFile.Get("PhiStar")
+        if (Bin0 == 0)cout << "missing Bin0" << endl;
+        if (Bin1 == 0)cout << "missing Bin1" << endl;
+        if (Bin2 == 0)cout << "missing Bin2" << endl;
+        if (Bin3 == 0)cout << "missing Bin3" << endl;
+        if (Bin4 == 0)cout << "missing Bin4" << endl;
+        if (Bin5 == 0)cout << "missing Bin5" << endl;
 
-    if (!doNorm && FType != 2) {
-        Bin0->Scale(1 / .4);
-        Bin1->Scale(1 / .4);
-        Bin2->Scale(1 / .4);
-        Bin3->Scale(1 / .4);
-        Bin4->Scale(1 / .4);
-        Bin5->Scale(1 / .4);
+        if (!doNorm && FType != 2) {
+            Bin0->Scale(1 / .4);
+            Bin1->Scale(1 / .4);
+            Bin2->Scale(1 / .4);
+            Bin3->Scale(1 / .4);
+            Bin4->Scale(1 / .4);
+            Bin5->Scale(1 / .4);
+        }
     }
 
-
-    TH1D* phiStarHist = (TH1D*) ResFile.Get("Phi_Star");
-    if(FType == 1)cout<<"Our errors are "<<phiStarHist->GetBinError(1)<<"  and bin value is "<<phiStarHist->GetBinContent(1)<<endl;;
-    if (doNorm && FType != 0&&false) {
+    string NameofPlot = "Phi_Star";
+    if (FType == 2||(!doNorm&&FType != 0) )NameofPlot = "PhiStar_1D_PDF0";
+    cout<<"Sanity check 1"<<endl;
+    cout<<"our file name is "<<FName<<"  and our histogram name is "<<NameofPlot<<endl;
+    TH1D* phiStarHist = (TH1D*) ResFile.Get(NameofPlot.c_str());
+    cout<<"sanity check 2 "<<phiStarHist->GetBinContent(1);
+    if (FType =! 1)cout << "Our errors are " << phiStarHist->GetBinError(1) << "  and bin value is " << phiStarHist->GetBinContent(1) << endl;
+    
+    if (doNorm && FType != 0 && false) {
         for (uint i = 1; i <= nphistar; i++) {
             phiStarHist->SetBinContent(i, phiStarHist->GetBinContent(i) / (phistarBins[i] - phistarBins[i - 1]));
         }
     }
-if(FType == 1)cout<<"Second Our errors are "<<phiStarHist->GetBinError(1)<<"  and bin value is "<<phiStarHist->GetBinContent(1)<<endl;;
+    if (FType =! 1)cout << "Second Our errors are " << phiStarHist->GetBinError(1) << "  and bin value is " << phiStarHist->GetBinContent(1) << endl;
+    ;
     //phiStarHist->Add(Bin1);
     //phiStarHist->Add(Bin2);
     //phiStarHist->Add(Bin3);
@@ -295,7 +307,8 @@ void PrintFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, 
 
 void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, TGraphAsymmErrors* g_ph_final, TGraphAsymmErrors* g_dummy_phistar, TGraphAsymmErrors* g_ratio_phistar, TGraphAsymmErrors* g_ratio_mg_phistar, TGraphAsymmErrors* g_ratio_ph_phistar, bool isPlot2 = 0) {
 
-    double WordSize = .075;
+    size_t MarkerSize = 2;
+    double WordSize = .072;
     TCanvas* FinalPhiTot = new TCanvas("FinalPhiTot", "FinalPhiTot", 800, 900);
     FinalPhiTot->Divide(1, 2);
     FinalPhiTot->cd(1);
@@ -338,20 +351,20 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
     TGraphAsymmErrors* g_ratio_AMCatnlo_phistar = CreateRatio(g_data_final, ResbosFromRaj(2), 0);
 
 
-    g_ratio_mg_phistar->SetMarkerSize(1);
+    g_ratio_mg_phistar->SetMarkerSize(MarkerSize);
     g_ratio_mg_phistar->SetLineWidth(2);
     g_ratio_mg_phistar->SetMarkerStyle(kFullTriangleUp);
     g_ratio_mg_phistar->SetMarkerColor(kBlue - 7);
     g_ratio_mg_phistar->SetLineColor(kBlue - 7);
 
 
-    g_ratio_ph_phistar->SetMarkerSize(1);
+    g_ratio_ph_phistar->SetMarkerSize(MarkerSize);
     g_ratio_ph_phistar->SetLineWidth(2);
     g_ratio_ph_phistar->SetMarkerStyle(kFullSquare);
     g_ratio_ph_phistar->SetMarkerColor(kRed);
     g_ratio_ph_phistar->SetLineColor(kRed);
 
-    g_ratio_PowPyth8_phistar->SetMarkerSize(1);
+    g_ratio_PowPyth8_phistar->SetMarkerSize(MarkerSize);
     g_ratio_PowPyth8_phistar->SetLineWidth(2);
     g_ratio_PowPyth8_phistar->SetMarkerStyle(kOpenSquare);
     g_ratio_PowPyth8_phistar->SetMarkerColor(kRed);
@@ -359,12 +372,12 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
 
     g_ratio_Resbos_phistar->SetMarkerColor(kGreen + 1);
     g_ratio_Resbos_phistar->SetLineColor(kGreen + 1);
-    g_ratio_Resbos_phistar->SetMarkerSize(1);
+    g_ratio_Resbos_phistar->SetMarkerSize(MarkerSize);
     g_ratio_Resbos_phistar->SetLineWidth(2);
     g_ratio_Resbos_phistar->SetMarkerStyle(kStar);
 
 
-    g_ratio_AMCatnlo_phistar->SetMarkerSize(1);
+    g_ratio_AMCatnlo_phistar->SetMarkerSize(MarkerSize);
     g_ratio_AMCatnlo_phistar->SetLineWidth(2);
     g_ratio_AMCatnlo_phistar->SetMarkerStyle(kOpenCircle);
     g_ratio_AMCatnlo_phistar->SetMarkerColor(kCyan + 2);
@@ -372,26 +385,26 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
 
 
 
-    g_mg_final->SetMarkerSize(1);
+    g_mg_final->SetMarkerSize(MarkerSize);
     g_mg_final->SetLineWidth(2);
     g_mg_final->SetMarkerStyle(kFullTriangleUp);
     g_mg_final->SetMarkerColor(kBlue - 7);
     g_mg_final->SetLineColor(kBlue - 7);
 
 
-    g_ph_final->SetMarkerSize(1);
+    g_ph_final->SetMarkerSize(MarkerSize);
     g_ph_final->SetLineWidth(2);
     g_ph_final->SetMarkerStyle(kFullSquare);
     g_ph_final->SetMarkerColor(kRed);
     g_ph_final->SetLineColor(kRed);
 
-    g_data_final->SetMarkerSize(1);
+    g_data_final->SetMarkerSize(MarkerSize);
     g_data_final->SetLineWidth(2);
     g_data_final->SetMarkerStyle(kFullCircle);
     g_data_final->SetMarkerColor(kBlack);
     g_data_final->SetLineColor(kBlack);
 
-    g_PowPyth8_phistar->SetMarkerSize(1);
+    g_PowPyth8_phistar->SetMarkerSize(MarkerSize);
     g_PowPyth8_phistar->SetLineWidth(2);
     g_PowPyth8_phistar->SetMarkerStyle(kOpenSquare);
     g_PowPyth8_phistar->SetMarkerColor(kRed);
@@ -399,12 +412,12 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
 
     g_Resbos_phistar->SetMarkerColor(kGreen + 1);
     g_Resbos_phistar->SetLineColor(kGreen + 1);
-    g_Resbos_phistar->SetMarkerSize(1);
+    g_Resbos_phistar->SetMarkerSize(MarkerSize);
     g_Resbos_phistar->SetLineWidth(2);
     g_Resbos_phistar->SetMarkerStyle(kStar);
 
 
-    g_AMCatnlo_phistar->SetMarkerSize(1);
+    g_AMCatnlo_phistar->SetMarkerSize(MarkerSize);
     g_AMCatnlo_phistar->SetLineWidth(2);
     g_AMCatnlo_phistar->SetMarkerStyle(kOpenCircle);
     g_AMCatnlo_phistar->SetMarkerColor(kCyan + 2);
@@ -414,7 +427,7 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
 
 
     if (AlexPlots && doNorm) {
-        
+
         g_ph2_finalAlex = new TGraphAsymmErrors(nphistar);
         g_ratio_ph2_phistarAlex = new TGraphAsymmErrors(nphistar);
         g_ph1_finalAlex = new TGraphAsymmErrors(nphistar);
@@ -429,9 +442,9 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
     if (doNorm) g_dummy_phistar->GetYaxis()->SetRangeUser(0.0012, 100.0);
     else g_dummy_phistar->GetYaxis()->SetRangeUser(0.8, 40000.0);
     g_dummy_phistar->GetXaxis()->CenterTitle();
-    g_dummy_phistar->GetXaxis()->SetTitleOffset(.8);
+    g_dummy_phistar->GetXaxis()->SetTitleOffset(1.1);
     g_dummy_phistar->GetYaxis()->CenterTitle();
-    g_dummy_phistar->GetYaxis()->SetTitleSize(1.2*WordSize);
+    g_dummy_phistar->GetYaxis()->SetTitleSize(1.2 * WordSize);
     g_dummy_phistar->GetYaxis()->SetLabelSize(WordSize);
     g_dummy_phistar->GetYaxis()->SetTitleOffset(0.7);
     g_dummy_phistar->Draw("A2");
@@ -453,7 +466,7 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
             cout << "test 3.1" << endl;
         }
         g_ph2_finalAlex->SetLineColor(Color3);
-        g_ph2_finalAlex->SetMarkerSize(1);
+        g_ph2_finalAlex->SetMarkerSize(MarkerSize);
         g_ph2_finalAlex->SetLineWidth(2);
         g_ph2_finalAlex->SetMarkerStyle(21);
         g_ph2_finalAlex->Draw("PEsame");
@@ -461,7 +474,7 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
 
         g_ph1_finalAlex->SetMarkerColor(Color4);
         g_ph1_finalAlex->SetLineColor(Color4);
-        g_ph1_finalAlex->SetMarkerSize(1);
+        g_ph1_finalAlex->SetMarkerSize(MarkerSize);
         g_ph1_finalAlex->SetLineWidth(2);
         g_ph1_finalAlex->SetMarkerStyle(22);
         g_ph1_finalAlex->Draw("PEsame");
@@ -502,7 +515,7 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
         }
         VAndU.close();
     }
-    int ColorError = kYellow;
+    int ColorError = kGray;
     g_data_final->Draw("PEsame");
     g_data_final->SetFillColor(ColorError);
 
@@ -513,13 +526,17 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
     leg->SetLineWidth(1);
     leg->SetNColumns(1);
     leg->SetTextFont(42);
-    leg->SetTextSize(WordSize);
+    leg->SetTextSize(WordSize * .9);
 
     if (!isPlot2) {
-        leg->AddEntry(g_data_final, "Combined Data", "P");
+        leg->AddEntry(g_data_final, "Data", "FP");
         if (Type == "elec") {
             //leg->AddEntry(g_mg_final, "Z #rightarrow ee MadGraph+PYTHIA6 (Z2*)", "P");
-            leg->AddEntry(g_ph_final, "Z #rightarrow ee POWHEG+PYTHIA6 (Z2*)", "P");
+            leg->AddEntry(g_ratio_mg_phistar, "MadGraph + PYTHIA 6 (Z2*)", "P");
+            leg->AddEntry(g_ratio_ph_phistar, "POWHEG + PYTHIA6 (Z2*)", "P");
+            leg->AddEntry(g_ratio_PowPyth8_phistar, "POWHEG + PYTHIA 8 (CUETP8M1)", "P");
+            leg->AddEntry(g_ratio_Resbos_phistar, "ResBos", "P");
+            leg->AddEntry(g_ratio_AMCatnlo_phistar, "aMC@NLO + PYTHIA 8 (CUETP8M1)", "P");
             if (AlexPlots && doNorm) {
                 leg->AddEntry(g_ph2_finalAlex, "Z #rightarrow ee POWHEG+PYTHIA8 (Tunepp 5)", "P");
                 leg->AddEntry(g_ph1_finalAlex, "Z #rightarrow ee POWHEG+PYTHIA8 (Tunepp 14)", "P");
@@ -530,11 +547,11 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
             leg->AddEntry(g_ph_final, "Z #rightarrow #mu#mu Powheg", "P");
         }
         if (Type == "combined") {
-            leg->AddEntry(g_ratio_mg_phistar, "MadGraph+PYTHIA6 (Z2*)", "P");
-            leg->AddEntry(g_ratio_ph_phistar, "POWHEG+PYTHIA6 (Z2*)", "P");
-            leg->AddEntry(g_ratio_PowPyth8_phistar, "POWHEG+PYTHIA8 (CT10)", "P");
+            leg->AddEntry(g_ratio_mg_phistar, "MadGraph + PYTHIA 6 (Z2*)", "P");
+            leg->AddEntry(g_ratio_ph_phistar, "POWHEG + PYTHIA6 (Z2*)", "P");
+            leg->AddEntry(g_ratio_PowPyth8_phistar, "POWHEG + PYTHIA 8 (CUETP8M1)", "P");
             leg->AddEntry(g_ratio_Resbos_phistar, "ResBos", "P");
-            leg->AddEntry(g_ratio_AMCatnlo_phistar, "aMC@NLO+PYTHIA8(CUETP8M1)", "P");
+            leg->AddEntry(g_ratio_AMCatnlo_phistar, "aMC@NLO + PYTHIA 8 (CUETP8M1)", "P");
         }
     } else {
         //leg->AddEntry(g_mg_final, "data: Z #rightarrow ee", "P");
@@ -549,7 +566,9 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
     mark.SetNDC(true);
     mark.DrawLatex(0.66, 0.93, "19.7 fb^{-1} (8 TeV)");
     mark.DrawLatex(0.15, 0.93, "CMS");
-    if (Type == "elec" && !isPlot2) {
+    if(Type == "combined")mark.DrawLatex(0.172, 0.844, "ee + #mu#mu Combined");
+    else if(Type == "elec")mark.DrawLatex(0.172, 0.844, "ee");
+    if (Type == "elec" && !isPlot2&&false) {
         mark.DrawLatex(0.19, 0.24, "|#eta^{e_{0}}| < 2.1,        |#eta^{e_{1}}| < 2.4");
         mark.DrawLatex(0.19, 0.19, "p_{T}^{e_{0}} > 30 GeV,   p_{T}^{e_{1}} > 20 GeV");
         mark.DrawLatex(0.19, 0.14, "60 GeV < M_{ee} < 120 GeV");
@@ -585,9 +604,9 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
         g_ratio_phistar->SetFillColor(ColorError);
         g_ratio_phistar->GetYaxis()->SetRangeUser(.78, 1.22);
         g_ratio_phistar->GetXaxis()->CenterTitle();
-        g_ratio_phistar->GetXaxis()->SetTitleOffset(.65);
-        g_ratio_phistar->GetXaxis()->SetTitleSize(1.2*WordSize); 
-        g_ratio_phistar->GetYaxis()->SetTitleSize(1.2*WordSize);
+        g_ratio_phistar->GetXaxis()->SetTitleOffset(1.);
+        g_ratio_phistar->GetXaxis()->SetTitleSize(1.2 * WordSize);
+        g_ratio_phistar->GetYaxis()->SetTitleSize(1.2 * WordSize);
         g_ratio_phistar->GetXaxis()->SetLabelSize(WordSize);
         g_ratio_phistar->GetYaxis()->SetLabelSize(WordSize);
         g_ratio_phistar->Draw("AE2");
@@ -597,6 +616,7 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
         g_ratio_Resbos_phistar->Draw("PEsame");
         g_ratio_AMCatnlo_phistar->Draw("PEsame");
         TLine Test(0, 1, 3.12, 1);
+        gPad->RedrawAxis();
         Test.Draw();
     }
     std::string plotname = "ZShape_";
@@ -613,9 +633,122 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
     FinalPhiTot->SaveAs((plotname + "pdf").c_str());
     FinalPhiTot->SaveAs((plotname + "png").c_str());
     FinalPhiTot->SaveAs((plotname + "C").c_str());
-    
-    if(doNorm)FinalPhiTot->SaveAs("/home/user1/lesko/work/Phistar/papers/SMP-15-002/trunk/NormAll.pdf");
-    else FinalPhiTot->SaveAs("/home/user1/lesko/work/Phistar/papers/SMP-15-002/trunk/AbsAll.pdf");
+
+    if (doNorm)FinalPhiTot->SaveAs("/home/user1/lesko/work/Phistar/papers/SMP-15-002/trunk/ZShape_combined_Norm_Born.pdf");
+    else FinalPhiTot->SaveAs("/home/user1/lesko/work/Phistar/papers/SMP-15-002/trunk/ZShape_combined_Abs_Born.pdf");
+    if (doNorm)FinalPhiTot->SaveAs("/home/user1/lesko/work/Phistar/papers/SMP-15-002/trunk/ZShape_combined_Norm_Born.png");
+    else FinalPhiTot->SaveAs("/home/user1/lesko/work/Phistar/papers/SMP-15-002/trunk/ZShape_combined_Abs_Born.png");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    double MaxLess = 0;
+    double MaxGreater = 0;
+    for (size_t phibin = 0; phibin < 17; phibin++) {
+        double x, y;
+        g_ratio_mg_phistar->GetPoint(phibin, x, y);
+        if (fabs(y - 1) > MaxLess)MaxLess = fabs(y - 1);
+    }
+    for (size_t phibin = 17; phibin < nphistar; phibin++) {
+        double x, y;
+        g_ratio_mg_phistar->GetPoint(phibin, x, y);
+        if (fabs(y - 1) > MaxGreater)MaxGreater = fabs(y - 1);
+    }
+    cout << "Madgraph phi*<.1 max is " << MaxLess << " and phi*>.1 " << MaxGreater << endl;
+
+    MaxLess = 0;
+    MaxGreater = 0;
+    for (size_t phibin = 0; phibin < 17; phibin++) {
+        double x, y;
+        g_ratio_ph_phistar->GetPoint(phibin, x, y);
+        if (fabs(y - 1) > MaxLess)MaxLess = fabs(y - 1);
+    }
+    for (size_t phibin = 17; phibin < nphistar; phibin++) {
+        double x, y;
+        g_ratio_ph_phistar->GetPoint(phibin, x, y);
+        if (fabs(y - 1) > MaxGreater)MaxGreater = fabs(y - 1);
+    }
+    cout << "PowHeg phi*<.1 max is " << MaxLess << " and phi*>.1 " << MaxGreater << endl;
+
+    MaxLess = 0;
+    MaxGreater = 0;
+    for (size_t phibin = 0; phibin < 17; phibin++) {
+        double x, y;
+        g_ratio_PowPyth8_phistar->GetPoint(phibin, x, y);
+        if (fabs(y - 1) > MaxLess)MaxLess = fabs(y - 1);
+    }
+    for (size_t phibin = 17; phibin < nphistar; phibin++) {
+        double x, y;
+        g_ratio_PowPyth8_phistar->GetPoint(phibin, x, y);
+        if (fabs(y - 1) > MaxGreater)MaxGreater = fabs(y - 1);
+    }
+    cout << "PowHeg Pyth8 phi*<.1 max is " << MaxLess << " and phi*>.1 " << MaxGreater << endl;
+
+    MaxLess = 0;
+    MaxGreater = 0;
+    for (size_t phibin = 0; phibin < 17; phibin++) {
+        double x, y;
+        g_ratio_Resbos_phistar->GetPoint(phibin, x, y);
+        if (fabs(y - 1) > MaxLess)MaxLess = fabs(y - 1);
+    }
+    for (size_t phibin = 17; phibin < nphistar; phibin++) {
+        double x, y;
+        g_ratio_Resbos_phistar->GetPoint(phibin, x, y);
+        if (fabs(y - 1) > MaxGreater)MaxGreater = fabs(y - 1);
+    }
+    cout << "Respos phi*<.1 max is " << MaxLess << " and phi*>.1 " << MaxGreater << endl;
+
+    MaxLess = 0;
+    MaxGreater = 0;
+    for (size_t phibin = 0; phibin < 17; phibin++) {
+        double x, y;
+        g_ratio_AMCatnlo_phistar->GetPoint(phibin, x, y);
+        if (fabs(y - 1) > MaxLess)MaxLess = fabs(y - 1);
+    }
+    for (size_t phibin = 17; phibin < nphistar; phibin++) {
+        double x, y;
+        g_ratio_AMCatnlo_phistar->GetPoint(phibin, x, y);
+        if (fabs(y - 1) > MaxGreater)MaxGreater = fabs(y - 1);
+    }
+    cout << "AMC@nlo phi*<.1 max is " << MaxLess << " and phi*>.1 " << MaxGreater << endl;
+
+
+    MaxLess = 0;
+    MaxGreater = 0;
+
+    for (size_t phibin = 0; phibin < 17; phibin++) {
+        double x, y;
+        g_ratio_ph_phistar->GetPoint(phibin, x, y);
+        double y2;
+        if (fabs(y - y2) > MaxLess)MaxLess = fabs(y - 1);
+    }
+    for (size_t phibin = 17; phibin < nphistar; phibin++) {
+        double x, y;
+        g_ratio_PowPyth8_phistar->GetPoint(phibin, x, y);
+        double y2;
+        if (fabs(y - y2) > MaxGreater)MaxGreater = fabs(y - 1);
+    }
+
+    cout << "Powheg 6 and 8 phi*<.1 max is " << MaxLess << " and phi*>.1 " << MaxGreater << endl;
+
+
+
+
+
+
 
     return;
     TCanvas* FinalPhiRatio = new TCanvas("FinalPhiRatio", "FinalPhiRatio", 800, 900);
@@ -624,7 +757,7 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
     FinalPhiRatio->SetLogx();
     if (isPlot2) g_ratio_phistar->GetYaxis()->SetTitle("MC/Data");
     else g_ratio_phistar->GetYaxis()->SetTitle("MC/Data");
-    g_ratio_phistar->SetFillColor(kYellow);
+    g_ratio_phistar->SetFillColor(kGray);
     g_ratio_phistar->GetYaxis()->CenterTitle();
     g_ratio_phistar->GetXaxis()->CenterTitle();
     g_ratio_phistar->SetFillColor(ColorError);
@@ -642,7 +775,7 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
     g_ratio_phistar->Draw("AE2");
 
 
-    g_ratio_mg_phistar->SetMarkerSize(1);
+    g_ratio_mg_phistar->SetMarkerSize(MarkerSize);
     g_ratio_mg_phistar->SetLineWidth(2);
     g_ratio_mg_phistar->SetMarkerStyle(kOpenTriangleUp);
     g_ratio_mg_phistar->SetMarkerColor(kBlue - 7);
@@ -679,7 +812,7 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
         mark.DrawLatex(0.15, 0.2, "p_{T}^{l_{0}} > 30 GeV,   p_{T}^{l_{1}} > 20 GeV");
         mark.DrawLatex(0.15, 0.15, "60 GeV < M_{ll} < 120 GeV");
 
-        //AveragedRatio->SetMarkerSize(1);
+        //AveragedRatio->SetMarkerSize(MarkerSize);
         //AveragedRatio->SetLineWidth(2);
         //AveragedRatio->SetMarkerStyle(kOpenCircle);
         //AveragedRatio->SetMarkerColor(kCyan + 2);
@@ -695,14 +828,14 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
     leg2->SetTextFont(42);
     leg2->SetTextSize(.04);
     if (!isPlot2) {
-        //g_ratio_phistar->SetMarkerColor(kYellow);
+        //g_ratio_phistar->SetMarkerColor(kGray);
         //leg2->AddEntry(g_ratio_phistar, "Data", "EF");
         if (Type == "elec") {
-            leg2->AddEntry(g_ratio_mg_phistar, "MadGraph+PYTHIA6 (Z2*)", "P");
-            leg2->AddEntry(g_ratio_ph_phistar, "POWHEG+PYTHIA6 (Z2*)", "P");
-            leg2->AddEntry(g_ratio_PowPyth8_phistar, "POWHEG+PYTHIA8 (CT10)", "P");
+            leg2->AddEntry(g_ratio_mg_phistar, "MadGraph + PYTHIA6 (Z2*)", "P");
+            leg2->AddEntry(g_ratio_ph_phistar, "POWHEG + PYTHIA6 (Z2*)", "P");
+            leg2->AddEntry(g_ratio_PowPyth8_phistar, "POWHEG + PYTHIA 8 (CUETP8M1)", "P");
             leg2->AddEntry(g_ratio_Resbos_phistar, "Resbos", "P");
-            leg2->AddEntry(g_ratio_AMCatnlo_phistar, "aMC@NLO+PYTHIA8(CUETP8M1)", "P");
+            leg2->AddEntry(g_ratio_AMCatnlo_phistar, "aMC@NLO + PYTHIA 8 (CUETP8M1)", "P");
             if (AlexPlots && doNorm) {
                 leg2->AddEntry(g_ratio_ph2_phistarAlex, "POWHEG+PYTHIA8  (Tunepp 5)", "P");
                 leg2->AddEntry(g_ratio_ph1_phistarAlex, "POWHEG+PYTHIA8 (Tunepp 14)", "P");
@@ -713,11 +846,11 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
             leg2->AddEntry(g_ph_final, "Z #rightarrow #mu#mu Powheg", "P");
         }
         if (Type == "combined") {
-            leg2->AddEntry(g_ratio_mg_phistar, "MadGraph+PYTHIA6 (Z2*)", "P");
-            leg2->AddEntry(g_ratio_ph_phistar, "POWHEG+PYTHIA6 (Z2*)", "P");
-            leg2->AddEntry(g_ratio_PowPyth8_phistar, "POWHEG+PYTHIA8 (CT10)", "P");
+            leg2->AddEntry(g_ratio_mg_phistar, "MadGraph + PYTHIA6 (Z2*)", "P");
+            leg2->AddEntry(g_ratio_ph_phistar, "POWHEG + PYTHIA6 (Z2*)", "P");
+            leg2->AddEntry(g_ratio_PowPyth8_phistar, "POWHEG + PYTHIA 8 (CT10)", "P");
             leg2->AddEntry(g_ratio_Resbos_phistar, "Resbos", "P");
-            leg2->AddEntry(g_ratio_AMCatnlo_phistar, "aMC@NLO+PYTHIA8(CUETP8M1)", "P");
+            leg2->AddEntry(g_ratio_AMCatnlo_phistar, "aMC@NLO + PYTHIA 8(CUETP8M1)", "P");
 
             //leg2->AddEntry(AveragedRatio, "Z #rightarrow ll Averaged Combined", "P");
         }
@@ -742,12 +875,12 @@ void PlotFinal(TGraphAsymmErrors* g_data_final, TGraphAsymmErrors* g_mg_final, T
     if (elec == 0)plotname += "Dressed.";
     if (elec == 1)plotname += "Born.";
     if (elec == 2)plotname += "Naked.";
-    if (AlexPlots && doNorm) {
 
-    }
     FinalPhiRatio->SaveAs((plotname + "pdf").c_str());
     FinalPhiRatio->SaveAs((plotname + "png").c_str());
     FinalPhiRatio->SaveAs((plotname + "C").c_str());
+
+
 }
 
 TGraphAsymmErrors* CreateDummy(TGraphAsymmErrors* graph) {
